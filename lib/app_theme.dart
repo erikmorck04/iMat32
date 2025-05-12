@@ -9,6 +9,7 @@ class AppTheme {
   static const double paddingHuge = 32.0;
 
   static ColorScheme colorScheme = ColorScheme.fromSeed(
-    seedColor: Colors.green,
+    seedColor: Color.fromARGB(255, 17, 147, 200),
   );
+  static const Color customPanelColor = Color.fromARGB(255, 90, 183, 220);
 }
