@@ -64,7 +64,7 @@ class MainView extends StatelessWidget {
   Container _leftPanel(ImatDataHandler iMat) {
     return Container(
       width: 300,
-      color: const Color.fromARGB(255, 154, 172, 134),
+      color: AppTheme.customPanelColor,
       child: Column(
         children: [
           SizedBox(height: AppTheme.paddingSmall),
