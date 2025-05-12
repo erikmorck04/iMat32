@@ -20,9 +20,15 @@ class MainView extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: AppTheme.paddingLarge),
-          _header(context),
-          SizedBox(height: AppTheme.paddingMedium),
+          Container(color: AppTheme.customPanelColor,
+          
+            child: 
+            Column(
+              children: [SizedBox(height: AppTheme.paddingLarge),
+                        _header(context),
+                        SizedBox(height: AppTheme.paddingMedium),
+                        ColoredBox(color: Colors.black, child: SizedBox(height: 2, width: MediaQuery.of(context).size.width,),)],),
+          ),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +130,7 @@ class MainView extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 //print('Söktest');
-                iMat.selectSelection(iMat.findProducts('mj'));
+                iMat.selectSelection(iMat.findProducts('Ä'));
               },
               child: Text('Söktest'),
             ),
@@ -134,29 +140,32 @@ class MainView extends StatelessWidget {
     );
   }
 
-  Row _header(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ElevatedButton(onPressed: () {}, child: Text('iMat')),
-        Row(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                dbugPrint('Historik-knapp');
-                _showHistory(context);
-              },
-              child: Text('Köphistorik'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _showAccount(context);
-              },
-              child: Text('Användare'),
-            ),
-          ],
-        ),
-      ],
+  Container _header(BuildContext context) {
+    return Container(
+      color: AppTheme.customPanelColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(onPressed: () {}, child: Text('iMat')),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  dbugPrint('Historik-knapp');
+                  _showHistory(context);
+                },
+                child: Text('Köphistorik'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _showAccount(context);
+                },
+                child: Text('Användare'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
