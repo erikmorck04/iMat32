@@ -1,0 +1,1 @@
+ /Users/filiplarsen/Documents/GitHub/iMat32/.dart_tool/flutter_build/361a6642e3be8dd675843eeaaf001968/native_assets.json: 
