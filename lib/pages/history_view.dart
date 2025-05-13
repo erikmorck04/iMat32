@@ -1,6 +1,10 @@
 import 'package:api_test/app_theme.dart';
 import 'package:api_test/model/imat/order.dart';
+import 'package:api_test/model/imat/product.dart';
+import 'package:api_test/model/imat/shopping_item.dart';
 import 'package:api_test/model/imat_data_handler.dart';
+import 'package:api_test/widgets/buy_button.dart';
+import 'package:api_test/widgets/buy_order_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -113,20 +117,55 @@ class _HistoryViewState extends State<HistoryView> {
   // In the null case the function returns SizedBox.shrink()
   // which is a what to use to create an empty widget.
   Widget _orderDetails(Order? order) {
+    var iMat = context.watch<ImatDataHandler>();
     if (order != null) {
-      return Column(
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Order ${order.orderNumber}',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          SizedBox(height: AppTheme.paddingSmall),
-          for (final item in order.items)
-            Text('${item.product.name}, ${item.amount}'),
-          SizedBox(height: AppTheme.paddingSmall),
-          Text(
-            'Totalt: ${order.getTotal().toStringAsFixed(2)}kr',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Container(
+            color: Color.fromARGB(255, 228, 228, 228),
+            width: 300,
+            child: Column(
+              children: [
+                Text(
+                  'Order ${order.orderNumber}',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                SizedBox(height: AppTheme.paddingSmall),
+                for (final item in order.items)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 20),
+                        SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: iMat.getImage(item.product),
+                        ),
+                        SizedBox(width: 40),
+
+                        Text('${item.product.name}, ${item.amount}'),
+                      ],
+                    ),
+                  ),
+                SizedBox(height: AppTheme.paddingSmall),
+                Text(
+                  'Totalt: ${order.getTotal().toStringAsFixed(2)}kr',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: AppTheme.paddingMedium),
+                BuyOrderButton(
+                  onPressed: () {
+                    for (final item in order.items) {
+                      iMat.shoppingCartAdd(item);
+                    }
+                    ;
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       );
