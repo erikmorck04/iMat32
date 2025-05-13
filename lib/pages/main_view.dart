@@ -40,9 +40,7 @@ class MainView extends StatefulWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _leftPanel(iMat),
-                Container(
-                  width: 580,
-                  //height: 400,
+                Expanded(
                   child: _centerStage(context, products),
                 ),
                 Container(
@@ -59,23 +57,42 @@ class MainView extends StatefulWidget {
   }
 
   Widget _shoppingCart(ImatDataHandler iMat) {
-    return Column(
-      children: [
+    return Container(
+      width: 300,
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
+      ),
+      decoration: BoxDecoration(
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 1,
+          blurRadius: 5,
+          offset: Offset(-2, 0), // changes position of shadow
+        ),
+      ],
+
+      ),
+      padding: EdgeInsets.all(AppTheme.paddingMedium),
+      child: Column(
+        children: [
         Text('Kundvagn'),
-        Container(height: 600, child: CartView()),
+        Expanded(child: CartView()),
         ElevatedButton(
           onPressed: () {
             iMat.placeOrder();
           },
           child: Text('Köp!'),
-        ),
-      ],
+        ),],)
+        
+      ,
     );
   }
 
   Container _leftPanel(ImatDataHandler iMat) {
     return Container(
-      width: 300,
+      width: 250,
       color: AppTheme.customPanelColor,
       child: Column(
         children: [
@@ -131,16 +148,7 @@ class MainView extends StatefulWidget {
             ),
           ),
           SizedBox(height: AppTheme.paddingSmall),
-          SizedBox(
-            width: 132,
-            child: ElevatedButton(
-              onPressed: () {
-                //print('Söktest');
-                iMat.selectSelection(iMat.findProducts('Ä'));
-              },
-              child: Text('Söktest'),
-            ),
-          ),
+          
         ],
       ),
     );
@@ -216,7 +224,14 @@ class MainView extends StatefulWidget {
   Widget _centerStage(BuildContext context, List<Product> products) {
     // ListView.builder has the advantage that tiles
     // are built as needed.
-    return ListView.builder(
+    return GridView.builder(
+      padding: EdgeInsets.all(AppTheme.paddingMedium),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1,
+        crossAxisSpacing: AppTheme.paddingMedium,
+        mainAxisSpacing: AppTheme.paddingMedium,
+      ),
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
         return ProductTile(products[index]);
