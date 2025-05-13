@@ -9,8 +9,14 @@ import 'package:api_test/widgets/product_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MainView extends StatelessWidget {
+class MainView extends StatefulWidget {
   const MainView({super.key});
+
+  @override
+  State<MainView> createState() => _MainViewState();}
+
+  class _MainViewState extends State<MainView> {
+  bool _isHovered = false; // State to track hover
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +152,22 @@ class MainView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ElevatedButton(onPressed: () {}, child: Text('iMat')),
+            Padding(
+              padding: const EdgeInsets.only(left: 40),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => setState(() => _isHovered = true),
+                onExit: (_) => setState(() => _isHovered = false), 
+              child:
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
+                },
+                
+                  child: Image.asset('assets/images/logoiMat-removebg-preview (1).png',height: 70,)
+                ,
+              ),
+            )),
           Row(
             children: [
               ElevatedButton(
