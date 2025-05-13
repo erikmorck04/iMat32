@@ -30,9 +30,9 @@ class MainView extends StatefulWidget {
           
             child: 
             Column(
-              children: [SizedBox(height: AppTheme.paddingLarge),
+              children: [SizedBox(height: AppTheme.paddingSmall),
                         _header(context),
-                        SizedBox(height: AppTheme.paddingMedium),
+                        SizedBox(height: AppTheme.paddingSmall),
                         ColoredBox(color: Colors.black, child: SizedBox(height: 2, width: MediaQuery.of(context).size.width,),)],),
           ),
           Expanded(
@@ -153,7 +153,7 @@ class MainView extends StatefulWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
             Padding(
-              padding: const EdgeInsets.only(left: 40),
+              padding: const EdgeInsets.only(left: 30),
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onEnter: (_) => setState(() => _isHovered = true),
@@ -167,8 +167,31 @@ class MainView extends StatefulWidget {
                   child: Image.asset('assets/images/logoiMat-removebg-preview (1).png',height: 70,)
                 ,
               ),
-            )),
+            )
+            ),
+          Container(width: 700,
+            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Sök produkter...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                fillColor: Colors.white,
+                filled: true,
+                ),
+                onChanged: (value) {
+                  var iMat = Provider.of<ImatDataHandler>(context, listen: false);
+                  if (value.isEmpty) {
+                    iMat.selectAllProducts();
+                  } else {
+                    iMat.selectSelection(iMat.findProducts(value));
+                  }
+                },
+            )),),
+
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ElevatedButton(
                 onPressed: () {
