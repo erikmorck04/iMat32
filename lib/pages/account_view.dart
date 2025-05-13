@@ -10,8 +10,6 @@ class AccountView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.paddingMedium),
           child: Column(
             children: [
               _header(context),
@@ -19,13 +17,14 @@ class AccountView extends StatelessWidget {
               _customerDetails(),
             ],
           ),
-        ),
       ),
     );
   }
 
   Widget _header(BuildContext context) {
-    return Row(
+    return Container(
+      color: AppTheme.customPanelColor,
+      child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ElevatedButton(
@@ -37,6 +36,7 @@ class AccountView extends StatelessWidget {
           child: Text('Tillbaka'),
         ),
       ],
+      )
     );
   }
 
