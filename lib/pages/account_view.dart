@@ -100,7 +100,7 @@ class AccountView extends StatefulWidget {
   }
     Widget _cardInfo() {
     return Container(
-      color: Color.fromARGB(255, 154, 172, 134),
+      color: Color.fromARGB(255, 124, 215, 223),
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [

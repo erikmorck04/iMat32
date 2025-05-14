@@ -1,5 +1,6 @@
 import 'package:api_test/model/imat/credit_card.dart';
 import 'package:api_test/model/imat_data_handler.dart';
+import 'package:api_test/pages/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -59,8 +60,9 @@ class _CardDetailsState extends State<CardDetails> {
           controller: _codeController,
           decoration: InputDecoration(labelText: 'CVV-kod'),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        SizedBox(height: 120),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(onPressed: _saveCard, child: Text('Spara')),
           ],
@@ -82,5 +84,8 @@ class _CardDetailsState extends State<CardDetails> {
 
     // This needed to trigger update to the server
     iMat.setCreditCard(card);
+    
+    
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
   }
 }
