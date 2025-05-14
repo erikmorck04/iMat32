@@ -74,7 +74,7 @@ class MainView extends StatefulWidget {
         ),
       ],
 
-      ),
+      ), 
       padding: EdgeInsets.all(AppTheme.paddingMedium),
       child: Column(
         children: [Row(
@@ -83,33 +83,60 @@ class MainView extends StatefulWidget {
             Text('Varukorg', style: TextStyle(fontSize: 30),),
             SizedBox(width: 15,),
             Icon(Icons.shopping_cart, size: 35,),],),
+
         Expanded(child: CartView()),
+
         Container(
-          
-          height: 70,
-          padding: EdgeInsets.all(AppTheme.paddingMedium),
-          color: AppTheme.customPanelColor,
+          decoration: BoxDecoration(
+            color: AppTheme.customPanelColor,
+            borderRadius: BorderRadius.circular(15)
+          ),
+          height: 100,
+          //padding: EdgeInsets.all(20),
           child: Row(
-            
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text(
+                  '${iMat.getShoppingCart().items.length} produkter',
+                          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+                          ),
+                ),
+                Text(
+                          '${iMat.getShoppingCart().items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount)).toStringAsFixed(2)} kr',
+                          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+                          ),
+                        ),],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                ElevatedButton(
                 onPressed: () {
                   iMat.shoppingCartClear();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.white,
                 ),
                 child: Text('Töm varukorg'),
               ),
+              SizedBox(height: AppTheme.paddingSmall),
               ElevatedButton(
             onPressed: () {
               iMat.placeOrder();
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
             },
+            
             child: Text('Köp!'),
-          ),
+          ),],),
+              
             ],
           ),
         ),
