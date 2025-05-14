@@ -25,7 +25,7 @@ class CartView extends StatelessWidget {
                 child: iMat.getImage(item.product),
               ),
               title: Text(item.product.name, overflow: TextOverflow.ellipsis,maxLines: 1,),
-              subtitle: Text('${item.amount}'),
+              subtitle: Text('${item.product.price} ${item.product.unit}'),
               trailing: Container(
                 width: 148,
                 child: Row(
