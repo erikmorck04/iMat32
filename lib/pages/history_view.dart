@@ -87,7 +87,7 @@ class _HistoryViewState extends State<HistoryView> {
                 // currently selected order.
                 Expanded(child: _orderDetails(_selectedOrder)),
                 Container(
-                  width: 300,
+                  width: 400,
                   //color: Colors.blueGrey,
                   child: _shoppingCart(iMat),
                 ),
