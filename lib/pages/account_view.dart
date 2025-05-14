@@ -113,9 +113,6 @@ class _MainViewState extends State<AccountView> {
       child: Column(
         children: [
           Expanded(child: CustomerDetails(onSave: _gotonextStep)),
-          //Align(alignment: Alignment.bottomCenter,
-          //child: ElevatedButton(onPressed: _gotonextStep, child: Text('Nästa'))
-          //)
         ],
       ),
     );

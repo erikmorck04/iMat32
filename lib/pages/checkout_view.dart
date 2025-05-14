@@ -1,6 +1,8 @@
 import 'package:api_test/app_theme.dart';
+import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/pages/main_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutView extends StatefulWidget {
   const CheckoutView({super.key});
@@ -31,13 +33,14 @@ class _CheckoutView extends State<CheckoutView> {
                 right: 250,
                 bottom: 60,
               ),
-              child: _currentstep == 0 ? _personalInfo() : _cardInfo(),
+              child: _currentstep == 0 ? _cardInfo() : _personalInfo(),
             ),
           ),
         ],
       ),
     );
-  }Widget _header(BuildContext context) {
+  }
+  Widget _header(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: AppTheme.paddingSmall, bottom: AppTheme.paddingSmall),
       color: AppTheme.customPanelColor,
@@ -73,4 +76,34 @@ class _CheckoutView extends State<CheckoutView> {
       ),
     );
   }
+  
+  Widget _personalInfo(){
+      final personalInfo = Provider.of<ImatDataHandler>(context).getCustomer();
+      return Container(
+        
+      );
+  }
+
+  Widget _cardInfo(){
+      final creditCard = Provider.of<ImatDataHandler>(context).getCreditCard();
+      return Container(
+        child: Column(
+          children: [
+            Text('Kortnummer: ${creditCard.cardNumber}'),
+            Text('Namn: ${creditCard.holdersName}'),
+            Text('Giltigt månad: ${creditCard.validMonth}'),
+            Text('Giltigt år: ${creditCard.validYear}'),
+            Text('CVV-kod: ${creditCard.verificationCode}'),
+          ],
+        ),
+      );
+  }
+
+
+
+
+
+
+
+
 }
