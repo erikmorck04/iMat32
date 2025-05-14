@@ -228,7 +228,10 @@ class _HistoryViewState extends State<HistoryView> {
     return ListTile(
       shape: Border(bottom: BorderSide(color: Colors.black)),
       onTap: () => onTap(order),
-      title: Text('Order ${order.orderNumber}, ${_formatDateTime(order.date)}'),
+      title: Text(
+        'Order ${order.orderNumber}, ${_formatDateTime(order.date)}',
+        style: TextStyle(fontSize: 19),
+      ),
     );
   }
 
@@ -261,6 +264,7 @@ class _HistoryViewState extends State<HistoryView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(height: AppTheme.paddingMedium),
                 Text(
                   'Order ${order.orderNumber}',
                   style: Theme.of(context).textTheme.headlineSmall,
