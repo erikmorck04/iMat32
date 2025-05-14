@@ -6,8 +6,9 @@ import 'package:provider/provider.dart';
 // Simple widget to edit card information.
 // It's probably better to use Form
 class CustomerDetails extends StatefulWidget {
-  const CustomerDetails({super.key});
+  final VoidCallback onSave;
 
+  const CustomerDetails({super.key, required this.onSave});
   @override
   State<CustomerDetails> createState() => _CustomerDetailsState();
 }
@@ -72,10 +73,12 @@ class _CustomerDetailsState extends State<CustomerDetails> {
           controller: _postAddressController,
           decoration: InputDecoration(labelText: 'Ort'),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        SizedBox(height: 80),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          
           children: [
-            ElevatedButton(onPressed: _saveCustomer, child: Text('Spara')),
+            ElevatedButton(onPressed: _saveCustomer, child: Text('Nästa')),
           ],
         ),
       ],
@@ -96,5 +99,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
 
     // This is needed to trigger updates to the server
     _imatDataHandler.setCustomer(customer);
+
+    widget.onSave();
   }
 }
