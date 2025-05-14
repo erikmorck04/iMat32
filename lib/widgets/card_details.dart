@@ -1,9 +1,6 @@
 import 'dart:math';
-
-import 'package:api_test/app_theme.dart';
 import 'package:api_test/model/imat/credit_card.dart';
 import 'package:api_test/model/imat_data_handler.dart';
-import 'package:api_test/pages/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
