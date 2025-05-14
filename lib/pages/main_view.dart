@@ -45,7 +45,7 @@ class MainView extends StatefulWidget {
                   child: _centerStage(context, products),
                 ),
                 Container(
-                  width: 400,
+                  width: 370,
                   //color: Colors.blueGrey,
                   child: _shoppingCart(iMat),
                 ),
@@ -59,7 +59,7 @@ class MainView extends StatefulWidget {
 
   Widget _shoppingCart(ImatDataHandler iMat) {
     return Container(
-      width: 400,
+      width: 370,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
       ),
@@ -148,7 +148,7 @@ class MainView extends StatefulWidget {
 
   Container _leftPanel(ImatDataHandler iMat) {
     return Container(
-      width: 250,
+      width: 300,
       color: AppTheme.customPanelColor,
       child: Column(
         children: [
