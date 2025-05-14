@@ -12,4 +12,5 @@ class AppTheme {
     seedColor: Color.fromARGB(255, 17, 147, 200),
   );
   static const Color customPanelColor = Color.fromARGB(255, 90, 183, 220);
+  static const Color customPanelColor2 = Color.fromARGB(255, 107, 193, 227);
 }

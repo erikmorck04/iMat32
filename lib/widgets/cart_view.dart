@@ -1,3 +1,4 @@
+import 'package:api_test/app_theme.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/widgets/delete_button.dart';
 import 'package:flutter/material.dart';
@@ -18,17 +19,54 @@ class CartView extends StatelessWidget {
         for (final item in items)
           Card(
             child: ListTile(
-              title: Text(item.product.name),
+              leading: SizedBox(
+                width: 45,
+                height: 45,
+                child: iMat.getImage(item.product),
+              ),
+              title: Text(item.product.name, overflow: TextOverflow.ellipsis,maxLines: 1,),
               subtitle: Text('${item.amount}'),
-              trailing: DeleteButton(
-                onPressed: () {
-                  // Remove this item and triggers update of the UI.
-                  // Also updates to the server.
-                  // Don't remove the item from the list since
-                  // That will not trigger rebuild of the UI
-                  // and not update the shoppingcart on the server
-                  iMat.shoppingCartRemove(item);
-                },
+              trailing: Container(
+                width: 148,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: 8,),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(0),
+                    ),
+                      onPressed: () {
+                      if (item.amount > 1) {
+                        iMat.shoppingCartUpdate(item, delta: - 1.0);
+                      } else {
+                        iMat.shoppingCartRemove(item);
+                      }
+                    },
+                    child: Icon(Icons.remove),
+                    ),
+                    
+                    Text(
+                      '${item.amount} st',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(0),
+                      backgroundColor: AppTheme.customPanelColor,
+                      iconColor: Colors.white
+                    ),
+                    onPressed: () {
+                      iMat.shoppingCartUpdate(item, delta: 1.0);
+                    },
+                    child: Icon(Icons.add,),
+                  ),
+                  ],
+                  
+                ),
               ),
             ),
           ),

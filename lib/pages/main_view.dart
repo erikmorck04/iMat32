@@ -44,7 +44,7 @@ class MainView extends StatefulWidget {
                   child: _centerStage(context, products),
                 ),
                 Container(
-                  width: 300,
+                  width: 400,
                   //color: Colors.blueGrey,
                   child: _shoppingCart(iMat),
                 ),
@@ -58,7 +58,7 @@ class MainView extends StatefulWidget {
 
   Widget _shoppingCart(ImatDataHandler iMat) {
     return Container(
-      width: 300,
+      width: 400,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
       ),
@@ -96,30 +96,33 @@ class MainView extends StatefulWidget {
       color: AppTheme.customPanelColor,
       child: Column(
         children: [
-          SizedBox(height: AppTheme.paddingSmall),
+          SizedBox(height: AppTheme.paddingHuge),
           SizedBox(
-            width: 132,
+            width: 200,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {
                 iMat.selectAllProducts();
               },
-              child: Text('Visa allt'),
+              child: Text('Visa allt', style: TextStyle(fontSize: 25),),
             ),
           ),
-          SizedBox(height: AppTheme.paddingSmall),
+          SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 132,
+            width: 200,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {
                 //print('Favoriter');
                 iMat.selectFavorites();
               },
-              child: Text('Favoriter'),
+              child: Text('Favoriter', style: TextStyle(fontSize: 25)),
             ),
           ),
-          SizedBox(height: AppTheme.paddingSmall),
+          SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 132,
+            width: 200,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {
                 var products = iMat.products;
@@ -131,12 +134,13 @@ class MainView extends StatefulWidget {
                   products[110],
                 ]);
               },
-              child: Text('Urval'),
+              child: Text('Urval', style: TextStyle(fontSize: 25)),
             ),
           ),
-          SizedBox(height: AppTheme.paddingSmall),
+          SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 132,
+            width: 200,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {
                 //print('Frukt');
@@ -144,7 +148,7 @@ class MainView extends StatefulWidget {
                   iMat.findProductsByCategory(ProductCategory.CABBAGE),
                 );
               },
-              child: Text('Grönsaker'),
+              child: Text('Grönsaker', style: TextStyle(fontSize: 25)),
             ),
           ),
           SizedBox(height: AppTheme.paddingSmall),
