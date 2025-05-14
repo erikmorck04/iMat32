@@ -75,7 +75,14 @@ class AccountView extends StatefulWidget {
                 ,
               ),
             )),
-
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 30),
+              child: ElevatedButton(onPressed: _goToMain, child: Text('Tillbaka')),
+            )
+          ],
+        )
       ]
       ),
     );
