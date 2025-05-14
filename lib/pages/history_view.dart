@@ -78,7 +78,7 @@ class _HistoryViewState extends State<HistoryView> {
                       ],
                     ),
                     child: Material(
-                      color: Colors.white,
+                      color: AppTheme.customPanelColor3,
                       child: _ordersList(context, orders, _selectOrder),
                     ),
                   ),
@@ -226,11 +226,13 @@ class _HistoryViewState extends State<HistoryView> {
 
   Widget _orderInfo(Order order, Function onTap) {
     return ListTile(
-      shape: Border(bottom: BorderSide(color: Colors.black)),
+      shape: Border(
+        bottom: BorderSide(color: const Color.fromARGB(255, 255, 255, 255)),
+      ),
       onTap: () => onTap(order),
       title: Text(
         'Order ${order.orderNumber}, ${_formatDateTime(order.date)}',
-        style: TextStyle(fontSize: 19),
+        style: TextStyle(fontSize: 19, color: AppTheme.colorScheme.primary),
       ),
     );
   }
@@ -256,64 +258,69 @@ class _HistoryViewState extends State<HistoryView> {
   Widget _orderDetails(Order? order) {
     var iMat = context.watch<ImatDataHandler>();
     if (order != null) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      return ListView(
         children: [
-          Container(
-            width: 500,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: AppTheme.paddingMedium),
-                Text(
-                  'Order ${order.orderNumber}',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                SizedBox(height: AppTheme.paddingSmall),
-                for (final item in order.items)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 20),
-                        SizedBox(
-                          width: 70,
-                          height: 70,
-                          child: iMat.getImage(item.product),
-                        ),
-                        SizedBox(width: 40),
-
-                        BuyButton(
-                          onPressed: () {
-                            iMat.shoppingCartAdd(ShoppingItem(item.product));
-                          },
-                        ),
-                        SizedBox(width: 40),
-
-                        Text(
-                          '${item.product.name}, ${item.amount}',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 500,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: AppTheme.paddingMedium),
+                    Text(
+                      'Order ${order.orderNumber}',
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                  ),
-                SizedBox(height: AppTheme.paddingSmall),
-                Text(
-                  'Totalt: ${order.getTotal().toStringAsFixed(2)}kr',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                    SizedBox(height: AppTheme.paddingSmall),
+                    for (final item in order.items)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 20),
+                          SizedBox(
+                            width: 70,
+                            height: 70,
+                            child: iMat.getImage(item.product),
+                          ),
+                          SizedBox(width: 40),
+
+                          BuyButton(
+                            onPressed: () {
+                              iMat.shoppingCartAdd(ShoppingItem(item.product));
+                            },
+                          ),
+                          SizedBox(width: 40),
+
+                          Text(
+                            '${item.product.name}, ${item.amount}',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                    SizedBox(height: AppTheme.paddingSmall),
+                    Text(
+                      'Totalt: ${order.getTotal().toStringAsFixed(2)}kr',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                      ),
+                    ),
+                    SizedBox(height: AppTheme.paddingMedium),
+                    BuyOrderButton(
+                      onPressed: () {
+                        for (final item in order.items) {
+                          iMat.shoppingCartAdd(item);
+                        }
+                        ;
+                      },
+                    ),
+                    SizedBox(height: AppTheme.paddingMedium),
+                  ],
                 ),
-                SizedBox(height: AppTheme.paddingMedium),
-                BuyOrderButton(
-                  onPressed: () {
-                    for (final item in order.items) {
-                      iMat.shoppingCartAdd(item);
-                    }
-                    ;
-                  },
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       );

@@ -14,9 +14,10 @@ class MainView extends StatefulWidget {
   const MainView({super.key});
 
   @override
-  State<MainView> createState() => _MainViewState();}
+  State<MainView> createState() => _MainViewState();
+}
 
-  class _MainViewState extends State<MainView> {
+class _MainViewState extends State<MainView> {
   bool _isHovered = false; // State to track hover
 
   @override
@@ -27,23 +28,30 @@ class MainView extends StatefulWidget {
     return Scaffold(
       body: Column(
         children: [
-          Container(color: AppTheme.customPanelColor,
-          
-            child: 
-            Column(
-              children: [SizedBox(height: AppTheme.paddingSmall),
-                        _header(context),
-                        SizedBox(height: AppTheme.paddingSmall),
-                        ColoredBox(color: Colors.black, child: SizedBox(height: 2, width: MediaQuery.of(context).size.width,),)],),
+          Container(
+            color: AppTheme.customPanelColor,
+
+            child: Column(
+              children: [
+                SizedBox(height: AppTheme.paddingSmall),
+                _header(context),
+                SizedBox(height: AppTheme.paddingSmall),
+                ColoredBox(
+                  color: Colors.black,
+                  child: SizedBox(
+                    height: 2,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _leftPanel(iMat),
-                Expanded(
-                  child: _centerStage(context, products),
-                ),
+                Expanded(child: _centerStage(context, products)),
                 Container(
                   width: 400,
                   //color: Colors.blueGrey,
@@ -61,68 +69,71 @@ class MainView extends StatefulWidget {
     return Container(
       width: 400,
       constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
+        minHeight:
+            MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
       ),
       decoration: BoxDecoration(
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 1,
-          blurRadius: 5,
-          offset: Offset(-2, 0), // changes position of shadow
-        ),
-      ],
-
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(-2, 0), // changes position of shadow
+          ),
+        ],
       ),
       padding: EdgeInsets.all(AppTheme.paddingMedium),
       child: Column(
-        children: [Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Varukorg', style: TextStyle(fontSize: 30),),
-            SizedBox(width: 15,),
-            Icon(Icons.shopping_cart, size: 35,),],),
-        Expanded(child: CartView()),
-        Container(
-          
-          height: 70,
-          padding: EdgeInsets.all(AppTheme.paddingMedium),
-          color: AppTheme.customPanelColor,
-          child: Row(
-            
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  iMat.shoppingCartClear();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text('Töm varukorg'),
-              ),
-              ElevatedButton(
-            onPressed: () {
-              iMat.placeOrder();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
-            },
-            child: Text('Köp!'),
-          ),
+              Text('Varukorg', style: TextStyle(fontSize: 30)),
+              SizedBox(width: 15),
+              Icon(Icons.shopping_cart, size: 35),
             ],
           ),
-        ),
-        ],)
-        
-      ,
+          Expanded(child: CartView()),
+          Container(
+            height: 70,
+            padding: EdgeInsets.all(AppTheme.paddingMedium),
+            color: AppTheme.customPanelColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    iMat.shoppingCartClear();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Töm varukorg'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    iMat.placeOrder();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => CheckoutView()),
+                    );
+                  },
+                  child: Text('Köp!'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Container _leftPanel(ImatDataHandler iMat) {
     return Container(
       width: 250,
-      color: AppTheme.customPanelColor,
+      color: AppTheme.customPanelColor3,
       child: Column(
         children: [
           SizedBox(height: AppTheme.paddingHuge),
@@ -133,7 +144,7 @@ class MainView extends StatefulWidget {
               onPressed: () {
                 iMat.selectAllProducts();
               },
-              child: Text('Visa allt', style: TextStyle(fontSize: 25),),
+              child: Text('Visa allt', style: TextStyle(fontSize: 25)),
             ),
           ),
           SizedBox(height: AppTheme.paddingMedium),
@@ -181,7 +192,6 @@ class MainView extends StatefulWidget {
             ),
           ),
           SizedBox(height: AppTheme.paddingSmall),
-          
         ],
       ),
     );
@@ -193,42 +203,55 @@ class MainView extends StatefulWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => setState(() => _isHovered = true),
-                onExit: (_) => setState(() => _isHovered = false), 
-              child:
-              GestureDetector(
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) => setState(() => _isHovered = true),
+              onExit: (_) => setState(() => _isHovered = false),
+              child: GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainView()),
+                  );
                 },
-                
-                  child: Image.asset('assets/images/logoiMat-removebg-preview (1).png',height: 70,)
-                ,
+
+                child: Image.asset(
+                  'assets/images/logoiMat-removebg-preview (1).png',
+                  height: 70,
+                ),
               ),
-            )
             ),
-          Container(width: 700,
-            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Sök produkter...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-                fillColor: Colors.white,
-                filled: true,
+          ),
+          Container(
+            width: 700,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Sök produkter...',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
                 ),
                 onChanged: (value) {
-                  var iMat = Provider.of<ImatDataHandler>(context, listen: false);
+                  var iMat = Provider.of<ImatDataHandler>(
+                    context,
+                    listen: false,
+                  );
                   if (value.isEmpty) {
                     iMat.selectAllProducts();
                   } else {
                     iMat.selectSelection(iMat.findProducts(value));
                   }
                 },
-            )),),
+              ),
+            ),
+          ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
