@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:api_test/app_theme.dart';
 import 'package:api_test/pages/main_view.dart';
 import 'package:api_test/widgets/card_details.dart';
@@ -26,6 +28,9 @@ class AccountView extends StatefulWidget {
       _currentstep = 0;
     });
 
+  }
+  void _goToMain() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
   }
 
   @override
@@ -70,22 +75,14 @@ class AccountView extends StatefulWidget {
                 ,
               ),
             )),
-          Row(
-      children: [
 
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Tillbaka'),
-        ),
-      ],
-      )
       ]
       ),
     );
   }
   Widget _personalInfo() {
     return Container(
-      color: Color.fromARGB(255, 154, 172, 134),
+      color: AppTheme.customColor,
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [
@@ -100,14 +97,14 @@ class AccountView extends StatefulWidget {
   }
     Widget _cardInfo() {
     return Container(
-      color: Color.fromARGB(255, 124, 215, 223),
+      color: AppTheme.customColor,
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [
-          Expanded(child: CardDetails()),
-          Align(alignment: Alignment.bottomCenter,
-          child: ElevatedButton(onPressed: _gotopreviousStep, child: Text('Gå tillbaka'))
-          )
+          Expanded(child: CardDetails(onSave: _goToMain,
+            onBack: _gotopreviousStep,
+          )),
+        
         ]
       ),
 

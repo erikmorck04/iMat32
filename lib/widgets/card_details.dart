@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:api_test/app_theme.dart';
 import 'package:api_test/model/imat/credit_card.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/pages/main_view.dart';
@@ -7,7 +10,9 @@ import 'package:provider/provider.dart';
 // Simple widget to edit card information.
 // It's probably better to use Form
 class CardDetails extends StatefulWidget {
-  const CardDetails({super.key});
+    final VoidCallback onBack;
+  final VoidCallback onSave;
+  const CardDetails({super.key, required this.onSave, required this.onBack});
 
   @override
   State<CardDetails> createState() => _CardDetailsState();
@@ -60,11 +65,23 @@ class _CardDetailsState extends State<CardDetails> {
           controller: _codeController,
           decoration: InputDecoration(labelText: 'CVV-kod'),
         ),
-        SizedBox(height: 120),
+
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: _saveCard, child: Text('Spara')),
+            SizedBox(height: 175),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                
+                ElevatedButton(
+                  onPressed: widget.onBack,
+                  child: Text('Tillbaka')),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _saveCard, 
+                  child: Text('Spara')),
+              ],
+            ),
           ],
         ),
       ],
@@ -85,7 +102,10 @@ class _CardDetailsState extends State<CardDetails> {
     // This needed to trigger update to the server
     iMat.setCreditCard(card);
     
-    
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
+    widget.onSave();
+
+
   }
+
+
 }
