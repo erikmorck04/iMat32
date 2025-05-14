@@ -3,6 +3,7 @@ import 'package:api_test/model/imat/product.dart';
 import 'package:api_test/model/imat/util/functions.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/pages/account_view.dart';
+import 'package:api_test/pages/checkout_view.dart';
 import 'package:api_test/pages/history_view.dart';
 import 'package:api_test/widgets/cart_view.dart';
 import 'package:api_test/widgets/product_tile.dart';
@@ -76,15 +77,43 @@ class MainView extends StatefulWidget {
       ),
       padding: EdgeInsets.all(AppTheme.paddingMedium),
       child: Column(
-        children: [
-        Text('Kundvagn'),
+        children: [Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Varukorg', style: TextStyle(fontSize: 30),),
+            SizedBox(width: 15,),
+            Icon(Icons.shopping_cart, size: 35,),],),
         Expanded(child: CartView()),
-        ElevatedButton(
-          onPressed: () {
-            iMat.placeOrder();
-          },
-          child: Text('Köp!'),
-        ),],)
+        Container(
+          
+          height: 70,
+          padding: EdgeInsets.all(AppTheme.paddingMedium),
+          color: AppTheme.customPanelColor,
+          child: Row(
+            
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  iMat.shoppingCartClear();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Töm varukorg'),
+              ),
+              ElevatedButton(
+            onPressed: () {
+              iMat.placeOrder();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
+            },
+            child: Text('Köp!'),
+          ),
+            ],
+          ),
+        ),
+        ],)
         
       ,
     );
