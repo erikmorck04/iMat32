@@ -7,8 +7,14 @@ class BuyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.add),
+    return ElevatedButton(
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Icon(Icons.add), SizedBox(width: 8), Text('Köp')],
+        ),
+      ),
+
       onPressed: () {
         onPressed();
       },
