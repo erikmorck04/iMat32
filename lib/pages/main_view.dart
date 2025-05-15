@@ -130,7 +130,6 @@ class MainView extends StatefulWidget {
               SizedBox(height: AppTheme.paddingSmall),
               ElevatedButton(
             onPressed: () {
-              iMat.placeOrder();
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
             },
             

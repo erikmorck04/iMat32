@@ -67,10 +67,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
                 
                 child: switch(_currentstep){
-                  0 => _varukorg(handler),
-                  1 => _deliveryInfo(),
-                  2 => _cardInfo(),
-                  3 => _personalInfo(),
+                  0 => _shoppingCart(handler),
+                  1 => _personalInfo(),
+                  2 => _deliveryInfo(),
+                  3 => _cardInfo(),
                   _ => _personalInfo(),
                 },
               ),
@@ -115,7 +115,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   
   Widget _personalInfo() {
     return Container(
-      color: AppTheme.customPanelColor,
+      color: AppTheme.customPanelColor3,
       padding: const EdgeInsets.only(
         top: AppTheme.paddingHuge,
         left: AppTheme.paddingHuge,
@@ -133,7 +133,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Widget _cardInfo() {
     return Container(
-      color: AppTheme.customPanelColor,
+      color: AppTheme.customPanelColor3,
       padding: const EdgeInsets.only(
         top: AppTheme.paddingHuge,
         left: AppTheme.paddingHuge,
@@ -152,7 +152,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Widget _deliveryInfo(){
     return Container(
-      color: AppTheme.customPanelColor,
+      color: AppTheme.customPanelColor3,
       padding: const EdgeInsets.only(
         top: AppTheme.paddingHuge,
         left: AppTheme.paddingHuge,
@@ -168,39 +168,83 @@ class _CheckoutViewState extends State<CheckoutView> {
       ),
     );
   }
-  Widget _varukorg(ImatDataHandler handler) {
-    final cart = handler.getShoppingCart();
-    final items = cart.items;
-    return Container(
-      color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.only(
-        top: AppTheme.paddingHuge,
-        left: AppTheme.paddingHuge,
-        right: AppTheme.paddingHuge,
-        bottom: AppTheme.paddingHuge,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Varukorg',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-          ...items.map((item) {
-            return ListTile(
-              title: Text(item.product.name),
-              trailing: Text('${item.product.price} kr'),
+  Widget _shoppingCart(ImatDataHandler handler) {
+  final cart = handler.getShoppingCart();
+  final items = cart.items;
+
+  return Container(
+    color: AppTheme.customPanelColor3,
+    padding: const EdgeInsets.all(AppTheme.paddingHuge),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center, // Align items to the start
+      children: [
+        const Text(
+          'Varukorg',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 30),
+        ListView.separated( // Use ListView.separated for dividers
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(), // Prevent nested scrolling
+          itemCount: items.length,
+          separatorBuilder: (context, index) => const Divider(color: Colors.grey), // Add a divider
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return Padding( // Add padding for each item
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 55,
+                    height: 55,
+                    child: handler.getImage(item.product),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded( 
+                    flex: 2,
+                    child: Text(
+                      item.product.name,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '${item.amount} st',
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center, 
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '${item.product.price} kr',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.end, 
+                    ),
+                  ),
+                ],
+              ),
             );
-          }).toList(),
-          
-          SizedBox(height: 146),
-          _actionButtons(),
-        ],
-      ),
-    );
-  }
+          },
+        ),
+        SizedBox(height: 40,),
+        Align(
+          alignment: Alignment.center,
+          child: Text('Summa ${handler.getShoppingCart().items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount)).toStringAsFixed(2)} kr',
+            style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,),
+            
+                    ),
+        ),
+        const SizedBox(height: 20),
+        _actionButtons(),
+      ],
+    ),
+  );
+}
 
 
   Widget _actionButtons() {
@@ -221,7 +265,7 @@ class _CheckoutViewState extends State<CheckoutView> {
             ),
           if (_currentstep == 3) 
             ElevatedButton(
-              onPressed: _goToMain,
+              onPressed: _goToMain,//iMat.placeOrder();
               child: Text('Betala'),
             ),
         ],
