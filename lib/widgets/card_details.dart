@@ -1,21 +1,16 @@
-import 'dart:math';
 import 'package:api_test/model/imat/credit_card.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Simple widget to edit card information.
-// It's probably better to use Form
 class CardDetails extends StatefulWidget {
-    final VoidCallback onBack;
-  final VoidCallback onSave;
-  const CardDetails({super.key, required this.onSave, required this.onBack});
+  const CardDetails({super.key});
 
   @override
-  State<CardDetails> createState() => _CardDetailsState();
+  State<CardDetails> createState() => CardDetailsState();
 }
 
-class _CardDetailsState extends State<CardDetails> {
+class CardDetailsState extends State<CardDetails> {
   late final TextEditingController _typeController;
   late final TextEditingController _nameController;
   late final TextEditingController _monthController;
@@ -62,30 +57,11 @@ class _CardDetailsState extends State<CardDetails> {
           controller: _codeController,
           decoration: InputDecoration(labelText: 'CVV-kod'),
         ),
-
-        Column(
-          children: [
-            SizedBox(height: 175),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                
-                ElevatedButton(
-                  onPressed: widget.onBack,
-                  child: Text('Tillbaka')),
-                SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: _saveCard, 
-                  child: Text('Spara')),
-              ],
-            ),
-          ],
-        ),
       ],
     );
   }
 
-  _saveCard() {
+  void saveCard() {
     var iMat = Provider.of<ImatDataHandler>(context, listen: false);
     CreditCard card = iMat.getCreditCard();
 
@@ -96,13 +72,6 @@ class _CardDetailsState extends State<CardDetails> {
     card.cardNumber = _numberController.text;
     card.verificationCode = int.parse(_codeController.text);
 
-    // This needed to trigger update to the server
     iMat.setCreditCard(card);
-    
-    widget.onSave();
-
-
   }
-
-
 }
