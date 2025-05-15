@@ -45,7 +45,7 @@ class MainView extends StatefulWidget {
                   child: _centerStage(context, products),
                 ),
                 Container(
-                  width: 400,
+                  width: 370,
                   //color: Colors.blueGrey,
                   child: _shoppingCart(iMat),
                 ),
@@ -59,7 +59,7 @@ class MainView extends StatefulWidget {
 
   Widget _shoppingCart(ImatDataHandler iMat) {
     return Container(
-      width: 400,
+      width: 370,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
       ),
@@ -148,63 +148,89 @@ class MainView extends StatefulWidget {
 
   Container _leftPanel(ImatDataHandler iMat) {
     return Container(
-      width: 250,
-      color: AppTheme.customPanelColor,
+      width: 300,
+      color: AppTheme.customPanelColor3,
       child: Column(
         children: [
           SizedBox(height: AppTheme.paddingHuge),
           SizedBox(
+            
             width: 200,
             height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                iMat.selectAllProducts();
-              },
-              child: Text('Visa allt', style: TextStyle(fontSize: 25),),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ElevatedButton(
+                
+                onPressed: () {
+                  iMat.selectAllProducts();
+                },
+                child: Text('Visa allt', style: TextStyle(fontSize: 25),),
+              ),
             ),
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
             width: 200,
             height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                //print('Favoriter');
-                iMat.selectFavorites();
-              },
-              child: Text('Favoriter', style: TextStyle(fontSize: 25)),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  //print('Favoriter');
+                  iMat.selectFavorites();
+                },
+                child: Text('Favoriter', style: TextStyle(fontSize: 25)),
+              ),
             ),
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
             width: 200,
             height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                var products = iMat.products;
-                iMat.selectSelection([
-                  products[4],
-                  products[45],
-                  products[68],
-                  products[102],
-                  products[110],
-                ]);
-              },
-              child: Text('Urval', style: TextStyle(fontSize: 25)),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  var products = iMat.products;
+                  iMat.selectSelection([
+                    products[4],
+                    products[45],
+                    products[68],
+                    products[102],
+                    products[110],
+                  ]);
+                },
+                child: Text('Urval', style: TextStyle(fontSize: 25)),
+              ),
             ),
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
             width: 200,
             height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                //print('Frukt');
-                iMat.selectSelection(
-                  iMat.findProductsByCategory(ProductCategory.CABBAGE),
-                );
-              },
-              child: Text('Grönsaker', style: TextStyle(fontSize: 25)),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  //print('Frukt');
+                  iMat.selectSelection(
+                    iMat.findProductsByCategory(ProductCategory.CABBAGE),
+                  );
+                },
+                child: Text('Grönsaker', style: TextStyle(fontSize: 25)),
+              ),
             ),
           ),
           SizedBox(height: AppTheme.paddingSmall),
