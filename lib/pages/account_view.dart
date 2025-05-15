@@ -16,21 +16,18 @@ class AccountView extends StatefulWidget {
 class _AccountViewState extends State<AccountView> {
   int _currentstep = 0;
 
-  // Navigera till nästa steg
   void _gotoNextStep() {
     setState(() {
       _currentstep = 1;
     });
   }
 
-  // Navigera till föregående steg
   void _gotoPreviousStep() {
     setState(() {
       _currentstep = 0;
     });
   }
 
-  // Navigera tillbaka till "MainView"
   void _goToMain() {
     Navigator.pushReplacement(
       context,
@@ -52,19 +49,18 @@ class _AccountViewState extends State<AccountView> {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 60,
-                left: 250,
-                right: 250,
-                bottom: 60,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 60,
+                  left: 250,
+                  right: 250,
+                  bottom: 120,
+                ),
+                child: _currentstep == 0 ? _personalInfo() : _cardInfo(),
               ),
-              child: _currentstep == 0 ? _personalInfo() : _cardInfo(),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: _actionButtons()),
         ],
       ),
     );
@@ -102,26 +98,45 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  // Personlig information
   Widget _personalInfo() {
     return Container(
       color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.all(32),
-      child: CustomerDetails(),
+      padding: const EdgeInsets.only(
+        top: AppTheme.paddingHuge,
+        left: AppTheme.paddingHuge,
+        right: AppTheme.paddingHuge,
+        bottom: AppTheme.paddingHuge,
+      ),
+      child: Column(children: [
+        CustomerDetails(),
+        SizedBox(height: 50),
+        _actionButtons(),
+      ],
+      ),
     );
   }
 
-  // Kortinformation
   Widget _cardInfo() {
     return Container(
       color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.all(32),
-      child: CardDetails(),
+      padding: const EdgeInsets.only(
+        top: AppTheme.paddingHuge,
+        left: AppTheme.paddingHuge,
+        right: AppTheme.paddingHuge,
+        bottom: AppTheme.paddingHuge,
+      ),
+      child: Column(
+        children: [
+          CardDetails(),
+          SizedBox(height: 146),
+          _actionButtons(),
+        ],
+      ),
     );
   }
   Widget _actionButtons() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 78),
+      padding: const EdgeInsets.only(bottom: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
