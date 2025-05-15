@@ -20,53 +20,50 @@ class CartView extends StatelessWidget {
           Card(
             child: ListTile(
               leading: SizedBox(
-                width: 45,
-                height: 45,
+                width: 40,
+                height: 40,
                 child: iMat.getImage(item.product),
               ),
               title: Text(item.product.name, overflow: TextOverflow.ellipsis,maxLines: 1,),
               subtitle: Text('${item.product.price} ${item.product.unit}'),
-              trailing: Container(
-                width: 148,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(width: 8,),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(0),
-                    ),
-                      onPressed: () {
-                      if (item.amount > 1) {
-                        iMat.shoppingCartUpdate(item, delta: - 1.0);
-                      } else {
-                        iMat.shoppingCartRemove(item);
-                      }
-                    },
-                    child: Icon(Icons.remove),
-                    ),
-                    
-                    Text(
-                      '${item.amount} st',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+              trailing: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: 8,),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(0),
-                      backgroundColor: AppTheme.customPanelColor,
-                      iconColor: Colors.white
-                    ),
-                    onPressed: () {
-                      iMat.shoppingCartUpdate(item, delta: 1.0);
-                    },
-                    child: Icon(Icons.add,),
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(0),
                   ),
-                  ],
+                    onPressed: () {
+                    if (item.amount > 1) {
+                      iMat.shoppingCartUpdate(item, delta: - 1.0);
+                    } else {
+                      iMat.shoppingCartRemove(item);
+                    }
+                  },
+                  child: Icon(Icons.remove),
+                  ),
                   
+                  Text(
+                    '${item.amount} st',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(0),
+                    backgroundColor: AppTheme.customPanelColor,
+                    iconColor: Colors.white
+                  ),
+                  onPressed: () {
+                    iMat.shoppingCartUpdate(item, delta: 1.0);
+                  },
+                  child: Icon(Icons.add,),
                 ),
+                ],
+                
               ),
             ),
           ),
