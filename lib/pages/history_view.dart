@@ -286,10 +286,17 @@ class _HistoryViewState extends State<HistoryView> {
                           ),
                           SizedBox(width: 40),
 
-                          BuyButton(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(0),
+                              backgroundColor: AppTheme.customPanelColor,
+                              iconColor: Colors.white,
+                            ),
                             onPressed: () {
-                              iMat.shoppingCartAdd(ShoppingItem(item.product));
+                              iMat.shoppingCartUpdate(item, delta: 1.0);
                             },
+                            child: Icon(Icons.add),
                           ),
                           SizedBox(width: 40),
 
