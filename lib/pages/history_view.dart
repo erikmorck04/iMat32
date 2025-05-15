@@ -275,18 +275,38 @@ class _HistoryViewState extends State<HistoryView> {
                     ),
                     SizedBox(height: AppTheme.paddingSmall),
                     for (final item in order.items)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 20),
-                          SizedBox(
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Colors.transparent),
+                          ),
+                        ),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                          leading: SizedBox(
                             width: 70,
                             height: 70,
                             child: iMat.getImage(item.product),
                           ),
-                          SizedBox(width: 40),
-
-                          ElevatedButton(
+                          title: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 1,
+                            ), // Adjust this value to control border length
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: Text(
+                              '${item.product.name}, ${item.amount}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                          trailing: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: CircleBorder(),
                               padding: EdgeInsets.all(0),
@@ -294,17 +314,15 @@ class _HistoryViewState extends State<HistoryView> {
                               iconColor: Colors.white,
                             ),
                             onPressed: () {
-                              iMat.shoppingCartUpdate(item, delta: 1.0);
+                              var newItem = ShoppingItem(
+                                item.product,
+                                amount: 1.0,
+                              );
+                              iMat.shoppingCartAdd(newItem);
                             },
                             child: Icon(Icons.add),
                           ),
-                          SizedBox(width: 40),
-
-                          Text(
-                            '${item.product.name}, ${item.amount}',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
+                        ),
                       ),
                     SizedBox(height: AppTheme.paddingSmall),
                     Text(
@@ -318,9 +336,12 @@ class _HistoryViewState extends State<HistoryView> {
                     BuyOrderButton(
                       onPressed: () {
                         for (final item in order.items) {
-                          iMat.shoppingCartAdd(item);
+                          var newItem = ShoppingItem(
+                            item.product,
+                            amount: item.amount,
+                          );
+                          iMat.shoppingCartAdd(newItem);
                         }
-                        ;
                       },
                     ),
                     SizedBox(height: AppTheme.paddingMedium),
