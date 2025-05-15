@@ -19,26 +19,13 @@ class MainView extends StatefulWidget {
   class _MainViewState extends State<MainView> {
   bool _isHovered = false; // State to track hover
 
-  final Map<ProductCategory, IconData> categoryIcons = {
-  ProductCategory.CABBAGE: Icons.eco,
-  ProductCategory.FRUIT: Icons.apple,
-  ProductCategory.CITRUS_FRUIT: Icons.sunny,
-  ProductCategory.EXOTIC_FRUIT: Icons.emoji_nature,
-  ProductCategory.BERRY: Icons.grass,
-  ProductCategory.MELONS: Icons.spa,
-  ProductCategory.ROOT_VEGETABLE: Icons.yard,
-  ProductCategory.PASTA: Icons.ramen_dining,
-  ProductCategory.POTATO_RICE: Icons.rice_bowl,
-  ProductCategory.FLOUR_SUGAR_SALT: Icons.bakery_dining,
-  ProductCategory.NUTS_AND_SEEDS: Icons.nature,
-  ProductCategory.HERB: Icons.local_florist,
-  ProductCategory.HOT_DRINKS: Icons.local_cafe,
-  ProductCategory.COLD_DRINKS: Icons.local_drink,
-  ProductCategory.MEAT: Icons.set_meal,
-  ProductCategory.FISH: Icons.set_meal_outlined,
-  ProductCategory.DAIRIES: Icons.icecream,
-  ProductCategory.BREAD: Icons.bakery_dining,
-  ProductCategory.SWEET: Icons.cake,
+
+final Map<String, IconData> mainCategoryIcons = {
+  'Frukt & Grönt': Icons.eco,
+  'Skafferi': Icons.kitchen,
+  'Drycker': Icons.local_drink,
+  'Kött, Fisk & Mejeri': Icons.set_meal,
+  'Övrigt': Icons.category,
 };
 
   @override
@@ -343,7 +330,35 @@ class MainView extends StatefulWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: [SizedBox(
+      height: 50,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          backgroundColor: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+          ),
+        ),
+        icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
+        label: Text(
+          'Hem',
+          style: TextStyle(
+            fontSize: 22,
+            color: AppTheme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        onPressed: () {
+          Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainView()),);
+        },
+      ),
+    ),
+    SizedBox(width: 32),
               SizedBox(
       height: 50, // Match your search bar height
       child: ElevatedButton.icon(
@@ -398,6 +413,7 @@ class MainView extends StatefulWidget {
         },
       ),
     ),
+    
     SizedBox(width: 100)
             ],
           ),
@@ -426,13 +442,14 @@ class MainView extends StatefulWidget {
 
   Widget _categoryGroup(String title, Map<String, ProductCategory> categories, ImatDataHandler iMat) {
   return ExpansionTile(
+    leading: Icon(mainCategoryIcons[title] ?? Icons.category),
     title: Text(
       title,
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     ),
     children: categories.entries.map((entry) {
       return ListTile(
-        trailing: Icon(categoryIcons[entry.value] ?? Icons.category),
+        
         contentPadding: EdgeInsets.symmetric(horizontal: 32),
         title: Text(entry.key),
         onTap: () {
