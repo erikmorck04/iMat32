@@ -130,7 +130,7 @@ class MainView extends StatefulWidget {
               SizedBox(height: AppTheme.paddingSmall),
               ElevatedButton(
             onPressed: () {
-              iMat.placeOrder();
+              
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
             },
             
@@ -153,8 +153,8 @@ class MainView extends StatefulWidget {
       child: Column(
         children: [
           SizedBox(height: AppTheme.paddingHuge),
+          // Fixed buttons at the top
           SizedBox(
-            
             width: 200,
             height: 50,
             child: Container(
@@ -163,11 +163,10 @@ class MainView extends StatefulWidget {
                 borderRadius: BorderRadius.circular(25),
               ),
               child: ElevatedButton(
-                
                 onPressed: () {
                   iMat.selectAllProducts();
                 },
-                child: Text('Visa allt', style: TextStyle(fontSize: 25),),
+                child: Text('Visa allt', style: TextStyle(fontSize: 25)),
               ),
             ),
           ),
@@ -182,7 +181,6 @@ class MainView extends StatefulWidget {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  //print('Favoriter');
                   iMat.selectFavorites();
                 },
                 child: Text('Favoriter', style: TextStyle(fontSize: 25)),
@@ -214,27 +212,63 @@ class MainView extends StatefulWidget {
             ),
           ),
           SizedBox(height: AppTheme.paddingMedium),
-          SizedBox(
-            width: 200,
-            height: 50,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: ElevatedButton(
-                onPressed: () {
-                  //print('Frukt');
-                  iMat.selectSelection(
-                    iMat.findProductsByCategory(ProductCategory.CABBAGE),
-                  );
-                },
-                child: Text('Grönsaker', style: TextStyle(fontSize: 25)),
-              ),
+          // Expanded ListView for categories
+          Expanded(
+            child: ListView(
+              children: [
+                _categoryGroup(
+                  'Frukt & Grönt',
+                  {
+                    'Grönsaker': ProductCategory.CABBAGE,
+                    'Frukt': ProductCategory.FRUIT,
+                    'Citrusfrukter': ProductCategory.CITRUS_FRUIT,
+                    'Exotiska frukter': ProductCategory.EXOTIC_FRUIT,
+                    'Bär': ProductCategory.BERRY,
+                    'Meloner': ProductCategory.MELONS,
+                    'Rotfrukter': ProductCategory.ROOT_VEGETABLE,
+                  },
+                  iMat,
+                ),
+                _categoryGroup(
+                  'Skafferi',
+                  {
+                    'Pasta': ProductCategory.PASTA,
+                    'Potatis & Ris': ProductCategory.POTATO_RICE,
+                    'Mjöl, Socker & Salt': ProductCategory.FLOUR_SUGAR_SALT,
+                    'Nötter & Frön': ProductCategory.NUTS_AND_SEEDS,
+                    'Kryddor': ProductCategory.HERB,
+                  },
+                  iMat,
+                ),
+                _categoryGroup(
+                  'Drycker',
+                  {
+                    'Varma drycker': ProductCategory.HOT_DRINKS,
+                    'Kalla drycker': ProductCategory.COLD_DRINKS,
+                  },
+                  iMat,
+                ),
+                _categoryGroup(
+                  'Kött, Fisk & Mejeri',
+                  {
+                    'Kött': ProductCategory.MEAT,
+                    'Fisk': ProductCategory.FISH,
+                    'Mejeri': ProductCategory.DAIRIES,
+                  },
+                  iMat,
+                ),
+                _categoryGroup(
+                  'Övrigt',
+                  {
+                    'Bröd': ProductCategory.BREAD,
+                    'Mejeri': ProductCategory.DAIRIES,
+                    'Godis': ProductCategory.SWEET,
+                  },
+                  iMat,
+                ),
+              ],
             ),
           ),
-          SizedBox(height: AppTheme.paddingSmall),
-          
         ],
       ),
     );
@@ -324,6 +358,45 @@ class MainView extends StatefulWidget {
       },
     );
   }
+
+  Widget _categoryGroup(String title, Map<String, ProductCategory> categories, ImatDataHandler iMat) {
+  return ExpansionTile(
+    title: Text(
+      title,
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    ),
+    children: categories.entries.map((entry) {
+      return ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 32),
+        title: Text(entry.key),
+        onTap: () {
+          iMat.selectSelection(
+            iMat.findProductsByCategory(entry.value),
+          );
+        },
+      );
+    }).toList(),
+  );
+}
+
+  Widget _categoryButton(String text, VoidCallback onPressed) {
+  return SizedBox(
+    width: 200,
+    height: 50,
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: Text(text, style: TextStyle(fontSize: 25)),
+      ),
+    ),
+  );
+}
+
+
 
   void _showAccount(context) {
     Navigator.push(

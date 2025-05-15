@@ -1,10 +1,14 @@
 import 'dart:math';
 
 import 'package:api_test/app_theme.dart';
+import 'package:api_test/model/imat/order.dart';
+import 'package:api_test/model/imat/shopping_cart.dart';
+import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/pages/main_view.dart';
 import 'package:api_test/widgets/card_details.dart';
 import 'package:api_test/widgets/customer_details.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutView extends StatefulWidget {
   const CheckoutView({super.key});
@@ -14,36 +18,23 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
-  final GlobalKey<CustomerDetailsState> _customerDetailsKey =
-      GlobalKey<CustomerDetailsState>();
-  final GlobalKey<CardDetailsState> _cardDetailsKey = GlobalKey<CardDetailsState>();
-
   int _currentstep = 0;
+  Order? _selectedOrder;
 
-  // Navigera till nästa steg
+
   void _gotoNextStep() {
-    if (_currentstep == 0) {
-      // Spara kundinformation innan vi går vidare
-      _customerDetailsKey.currentState?.saveCustomer();
-    }
     setState(() {
-      _currentstep = 1;
+      _currentstep += 1;
     });
   }
 
-  // Navigera till föregående steg
   void _gotoPreviousStep() {
     setState(() {
-      _currentstep = 0;
+      _currentstep -= 1;
     });
   }
 
-  // Navigera tillbaka till "MainView"
   void _goToMain() {
-    if (_currentstep == 1) {
-      // Spara kortinformation innan vi avslutar
-      _cardDetailsKey.currentState?.saveCard();
-    }
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MainView()),
@@ -52,6 +43,8 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   @override
   Widget build(BuildContext context) {
+    final ImatDataHandler handler = Provider.of<ImatDataHandler>(context);
+
     return Scaffold(
       body: Column(
         children: [
@@ -64,17 +57,25 @@ class _CheckoutViewState extends State<CheckoutView> {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 60,
-                left: 250,
-                right: 250,
-                bottom: 60,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 120,
+                  left: 370,
+                  right: 370,
+                  bottom: 60,
+                ),
+                
+                child: switch(_currentstep){
+                  0 => _shoppingCart(handler),
+                  1 => _personalInfo(),
+                  2 => _deliveryInfo(),
+                  3 => _cardInfo(),
+                  _ => _personalInfo(),
+                },
               ),
-              child: _currentstep == 0 ? _personalInfo() : _cardInfo(),
             ),
           ),
-          _actionButtons(),
         ],
       ),
     );
@@ -111,49 +112,166 @@ class _CheckoutViewState extends State<CheckoutView> {
       ),
     );
   }
-
-  // Personlig information
+  
   Widget _personalInfo() {
     return Container(
-      color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.all(32),
-      child: CustomerDetails(key: _customerDetailsKey),
+      color: AppTheme.customPanelColor3,
+      padding: const EdgeInsets.only(
+        top: AppTheme.paddingHuge,
+        left: AppTheme.paddingHuge,
+        right: AppTheme.paddingHuge,
+        bottom: AppTheme.paddingHuge,
+      ),
+      child: Column(children: [
+        CustomerDetails(),
+        SizedBox(height: 50),
+        _actionButtons(),
+      ],
+      ),
     );
   }
 
-  // Kortinformation
   Widget _cardInfo() {
     return Container(
-      color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.all(32),
-      child: CardDetails(key: _cardDetailsKey),
+      color: AppTheme.customPanelColor3,
+      padding: const EdgeInsets.only(
+        top: AppTheme.paddingHuge,
+        left: AppTheme.paddingHuge,
+        right: AppTheme.paddingHuge,
+        bottom: AppTheme.paddingHuge,
+      ),
+      child: Column(
+        children: [
+          CardDetails(),
+          SizedBox(height: 146),
+          _actionButtons(),
+        ],
+      ),
     );
   }
 
-  // Knappar: Nästa, Tillbaka och Spara
+  Widget _deliveryInfo(){
+    return Container(
+      color: AppTheme.customPanelColor3,
+      padding: const EdgeInsets.only(
+        top: AppTheme.paddingHuge,
+        left: AppTheme.paddingHuge,
+        right: AppTheme.paddingHuge,
+        bottom: AppTheme.paddingHuge,
+      ),
+      child: Column(
+        children: [
+          // Delivery details widget goes here
+          SizedBox(height: 146),
+          _actionButtons(),
+        ],
+      ),
+    );
+  }
+  Widget _shoppingCart(ImatDataHandler handler) {
+  final cart = handler.getShoppingCart();
+  final items = cart.items;
+
+  return Container(
+    color: AppTheme.customPanelColor3,
+    padding: const EdgeInsets.all(AppTheme.paddingHuge),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center, // Align items to the start
+      children: [
+        const Text(
+          'Varukorg',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 30),
+        ListView.separated( // Use ListView.separated for dividers
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(), // Prevent nested scrolling
+          itemCount: items.length,
+          separatorBuilder: (context, index) => const Divider(color: Colors.grey), // Add a divider
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return Padding( // Add padding for each item
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 55,
+                    height: 55,
+                    child: handler.getImage(item.product),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded( 
+                    flex: 2,
+                    child: Text(
+                      item.product.name,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '${item.amount} st',
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center, 
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '${item.product.price} kr',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.end, 
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 40,),
+        Align(
+          alignment: Alignment.center,
+          child: Text('Summa ${handler.getShoppingCart().items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount)).toStringAsFixed(2)} kr',
+            style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,),
+            
+                    ),
+        ),
+        const SizedBox(height: 20),
+        _actionButtons(),
+      ],
+    ),
+  );
+}
+
+
   Widget _actionButtons() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 36),
+      padding: const EdgeInsets.only(bottom: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (_currentstep == 1) // Visa "Tillbaka"-knappen endast på steg 2
+          if (_currentstep > 0) 
             ElevatedButton(
               onPressed: _gotoPreviousStep,
               child: Text('Tillbaka'),
             ),
-          if (_currentstep == 0) // Visa "Nästa"-knappen endast på steg 1
+          if (_currentstep < 3 )
             ElevatedButton(
               onPressed: _gotoNextStep,
               child: Text('Nästa'),
             ),
-          if (_currentstep == 1) // Visa "Spara"-knappen på steg 2
+          if (_currentstep == 3) 
             ElevatedButton(
-              onPressed: _goToMain,
-              child: Text('Spara'),
+              onPressed: _goToMain,//iMat.placeOrder();
+              child: Text('Betala'),
             ),
         ],
       ),
     );
   }
+
+
 }
