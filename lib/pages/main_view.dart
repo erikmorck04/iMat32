@@ -19,6 +19,28 @@ class MainView extends StatefulWidget {
   class _MainViewState extends State<MainView> {
   bool _isHovered = false; // State to track hover
 
+  final Map<ProductCategory, IconData> categoryIcons = {
+  ProductCategory.CABBAGE: Icons.eco,
+  ProductCategory.FRUIT: Icons.apple,
+  ProductCategory.CITRUS_FRUIT: Icons.sunny,
+  ProductCategory.EXOTIC_FRUIT: Icons.emoji_nature,
+  ProductCategory.BERRY: Icons.grass,
+  ProductCategory.MELONS: Icons.spa,
+  ProductCategory.ROOT_VEGETABLE: Icons.yard,
+  ProductCategory.PASTA: Icons.ramen_dining,
+  ProductCategory.POTATO_RICE: Icons.rice_bowl,
+  ProductCategory.FLOUR_SUGAR_SALT: Icons.bakery_dining,
+  ProductCategory.NUTS_AND_SEEDS: Icons.nature,
+  ProductCategory.HERB: Icons.local_florist,
+  ProductCategory.HOT_DRINKS: Icons.local_cafe,
+  ProductCategory.COLD_DRINKS: Icons.local_drink,
+  ProductCategory.MEAT: Icons.set_meal,
+  ProductCategory.FISH: Icons.set_meal_outlined,
+  ProductCategory.DAIRIES: Icons.icecream,
+  ProductCategory.BREAD: Icons.bakery_dining,
+  ProductCategory.SWEET: Icons.cake,
+};
+
   @override
   Widget build(BuildContext context) {
     var iMat = context.watch<ImatDataHandler>();
@@ -297,6 +319,7 @@ class MainView extends StatefulWidget {
               ),
             )
             ),
+            SizedBox(width: 32),
           Container(width: 700,
             child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
@@ -321,19 +344,61 @@ class MainView extends StatefulWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  dbugPrint('Historik-knapp');
-                  _showHistory(context);
-                },
-                child: Text('Köphistorik'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _showAccount(context);
-                },
-                child: Text('Användare'),
-              ),
+              SizedBox(
+      height: 50, // Match your search bar height
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          backgroundColor: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+          ),
+        ),
+        icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
+        label: Text(
+          'Köphistorik',
+          style: TextStyle(
+            fontSize: 22,
+            color: AppTheme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        onPressed: () {
+          dbugPrint('Historik-knapp');
+          _showHistory(context);
+        },
+      ),
+    ),
+              SizedBox(width: 32),
+    SizedBox(
+      height: 50,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          backgroundColor: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+          ),
+        ),
+        icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
+        label: Text(
+          'Användare',
+          style: TextStyle(
+            fontSize: 22,
+            color: AppTheme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        onPressed: () {
+          _showAccount(context);
+        },
+      ),
+    ),
+    SizedBox(width: 100)
             ],
           ),
         ],
@@ -367,6 +432,7 @@ class MainView extends StatefulWidget {
     ),
     children: categories.entries.map((entry) {
       return ListTile(
+        trailing: Icon(categoryIcons[entry.value] ?? Icons.category),
         contentPadding: EdgeInsets.symmetric(horizontal: 32),
         title: Text(entry.key),
         onTap: () {
