@@ -14,6 +14,8 @@ class AccountView extends StatefulWidget {
 }
 
 class _AccountViewState extends State<AccountView> {
+  final GlobalKey<CustomerDetailsState> customerKey = GlobalKey();
+  final GlobalKey<CardDetailsState> cardKey = GlobalKey();
   int _currentstep = 0;
 
   void _gotoNextStep() {
@@ -108,7 +110,7 @@ class _AccountViewState extends State<AccountView> {
         bottom: AppTheme.paddingHuge,
       ),
       child: Column(children: [
-        CustomerDetails(),
+        CustomerDetails(key: customerKey),
         SizedBox(height: 50),
         _actionButtons(),
       ],
@@ -127,7 +129,7 @@ class _AccountViewState extends State<AccountView> {
       ),
       child: Column(
         children: [
-          CardDetails(),
+          CardDetails(key: cardKey),
           SizedBox(height: 146),
           _actionButtons(),
         ],
@@ -147,12 +149,18 @@ class _AccountViewState extends State<AccountView> {
             ),
           if (_currentstep == 0)
             ElevatedButton(
-              onPressed: _gotoNextStep,
+              onPressed: () {
+              customerKey.currentState?.saveCustomer();
+              _gotoNextStep();           
+              },
               child: Text('Nästa'),
             ),
           if (_currentstep == 1) 
             ElevatedButton(
-              onPressed: _goToMain,
+              onPressed: (){
+                cardKey.currentState?.saveCard();
+                _goToMain();
+              },
               child: Text('Spara'),
             ),
         ],
