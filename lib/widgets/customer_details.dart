@@ -3,17 +3,14 @@ import 'package:api_test/model/imat_data_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Simple widget to edit card information.
-// It's probably better to use Form
 class CustomerDetails extends StatefulWidget {
-  final VoidCallback onSave;
+  const CustomerDetails({super.key});
 
-  const CustomerDetails({super.key, required this.onSave});
   @override
-  State<CustomerDetails> createState() => _CustomerDetailsState();
+  State<CustomerDetails> createState() => CustomerDetailsState();
 }
 
-class _CustomerDetailsState extends State<CustomerDetails> {
+class CustomerDetailsState extends State<CustomerDetails> {
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
   late final TextEditingController _mobileNumberController;
@@ -73,20 +70,11 @@ class _CustomerDetailsState extends State<CustomerDetails> {
           controller: _postAddressController,
           decoration: InputDecoration(labelText: 'Ort'),
         ),
-        SizedBox(height: 80),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          
-          children: [
-            ElevatedButton(onPressed: _saveCustomer, child: Text('Nästa')),
-          ],
-        ),
       ],
     );
   }
 
-  _saveCustomer() {
-    //var iMat = Provider.of<ImatDataHandler>(context, listen: false);
+  void saveCustomer() {
     Customer customer = _imatDataHandler.getCustomer();
 
     customer.firstName = _firstNameController.text;
@@ -97,9 +85,6 @@ class _CustomerDetailsState extends State<CustomerDetails> {
     customer.postCode = _postCodeController.text;
     customer.postAddress = _postAddressController.text;
 
-    // This is needed to trigger updates to the server
     _imatDataHandler.setCustomer(customer);
-
-    widget.onSave();
   }
 }
