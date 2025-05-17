@@ -48,7 +48,7 @@ class _AccountViewState extends State<AccountView> {
           _header(context),
           SizedBox(height: AppTheme.paddingSmall),
           ColoredBox(
-            color: Colors.black,
+            color: AppTheme.colorScheme.primary,
             child: SizedBox(
               height: 2,
               width: MediaQuery.of(context).size.width,
@@ -58,12 +58,45 @@ class _AccountViewState extends State<AccountView> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(
-                  top: 60,
+                  top: 20,
                   left: 250,
                   right: 250,
                   bottom: 120,
                 ),
-                child: _currentstep == 0 ? _personalInfo() : _cardInfo(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _currentstep == 0 ? 
+                              'Dina Personuppgifter' : 
+                              'Dina Betaluppgifter',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            _currentstep == 0 ?
+                              'Här kan du se och ändra dina personuppgifter' :
+                              'Här kan du se och ändra dina betaluppgifter',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _currentstep == 0 ? _personalInfo() : _cardInfo(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -75,123 +108,42 @@ class _AccountViewState extends State<AccountView> {
   Container _header(BuildContext context) {
     return Container(
       color: AppTheme.customPanelColor,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => setState(() => _isHovered = true),
-                onExit: (_) => setState(() => _isHovered = false), 
-              child:
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
-                },
-                
-                  child: Image.asset('assets/images/logoiMat-removebg-preview (1).png',height: 70,)
-                ,
-              ),
-            )
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onEnter: (_) => setState(() => _isHovered = true),
+            onExit: (_) => setState(() => _isHovered = false),
+            child: GestureDetector(
+              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView())),
+              child: Image.asset('assets/images/logoiMat-removebg-preview (1).png', height: 70),
             ),
-            SizedBox(width: 32),
-          Container(width: 700,
-            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
-            ),),
-
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [SizedBox(
-      height: 50,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Hem',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainView()),);
-        },
-      ),
-    ),
-    SizedBox(width: 32),
-              SizedBox(
-      height: 50, // Match your search bar height
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Köphistorik',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          
-          Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HistoryView()),);
-        },
-      ),
-    ),
-              SizedBox(width: 32),
-    SizedBox(
-      height: 50,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Användare',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AccountView()),);
-        },
-      ),
-    ),
-    
-    SizedBox(width: 100)
+            children: [
+              _buildHeaderButton(
+                icon: Icons.home,
+                label: 'Tillbaka till Startsidan',
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainView())),
+              ),
+              const SizedBox(width: 32),
+              _buildHeaderButton(
+                icon: Icons.history,
+                label: 'Se din Köphistorik',
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryView())),
+              ),
+              const SizedBox(width: 32),
+              _buildHeaderButton(
+                icon: Icons.person,
+                label: 'Ditt Konto',
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AccountView())),
+                isSelected: true,
+              ),
+              const SizedBox(width: 100),
             ],
           ),
         ],
@@ -199,20 +151,52 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
+  Widget _buildHeaderButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+    bool isSelected = false,
+  }) {
+    return SizedBox(
+      height: 60,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          backgroundColor: isSelected ? AppTheme.colorScheme.primary : Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(color: AppTheme.colorScheme.primary, width: 2),
+          ),
+        ),
+        icon: Icon(icon, 
+          size: 32, 
+          color: isSelected ? Colors.white : AppTheme.colorScheme.primary
+        ),
+        label: Text(
+          label,
+          style: TextStyle(
+            fontSize: 22,
+            color: isSelected ? Colors.white : AppTheme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
   Widget _personalInfo() {
     return Container(
       color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.only(
-        top: AppTheme.paddingHuge,
-        left: AppTheme.paddingHuge,
-        right: AppTheme.paddingHuge,
-        bottom: AppTheme.paddingHuge,
-      ),
-      child: Column(children: [
-        CustomerDetails(key: customerKey),
-        SizedBox(height: 50),
-        _actionButtons(),
-      ],
+      padding: const EdgeInsets.all(40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomerDetails(key: customerKey),
+          const SizedBox(height: 50),
+          _actionButtons(),
+        ],
       ),
     );
   }
@@ -220,49 +204,83 @@ class _AccountViewState extends State<AccountView> {
   Widget _cardInfo() {
     return Container(
       color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.only(
-        top: AppTheme.paddingHuge,
-        left: AppTheme.paddingHuge,
-        right: AppTheme.paddingHuge,
-        bottom: AppTheme.paddingHuge,
-      ),
+      padding: const EdgeInsets.all(40),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CardDetails(key: cardKey),
-          SizedBox(height: 146),
+          const SizedBox(height: 50),
           _actionButtons(),
         ],
       ),
     );
   }
+
   Widget _actionButtons() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 0),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (_currentstep == 1) 
-            ElevatedButton(
+            _buildActionButton(
               onPressed: _gotoPreviousStep,
-              child: Text('Tillbaka'),
+              label: 'Tillbaka till Personuppgifter',
+              icon: Icons.arrow_back,
             ),
           if (_currentstep == 0)
-            ElevatedButton(
+            _buildActionButton(
               onPressed: () {
-              customerKey.currentState?.saveCustomer();
-              _gotoNextStep();           
+                customerKey.currentState?.saveCustomer();
+                _gotoNextStep();           
               },
-              child: Text('Nästa'),
+              label: 'Gå till Betaluppgifter',
+              icon: Icons.arrow_forward,
+              isPrimary: true,
             ),
           if (_currentstep == 1) 
-            ElevatedButton(
-              onPressed: (){
+            _buildActionButton(
+              onPressed: () {
                 cardKey.currentState?.saveCard();
                 _goToMain();
               },
-              child: Text('Spara'),
+              label: 'Spara och Avsluta',
+              icon: Icons.check_circle,
+              isPrimary: true,
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required VoidCallback onPressed,
+    required String label,
+    required IconData icon,
+    bool isPrimary = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isPrimary ? Colors.green : Colors.grey[200],
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+          textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        onPressed: onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!isPrimary) Icon(icon, size: 24),
+            if (!isPrimary) const SizedBox(width: 8),
+            Text(label),
+            if (isPrimary) const SizedBox(width: 8),
+            if (isPrimary) Icon(icon, size: 24),
+          ],
+        ),
       ),
     );
   }
