@@ -20,16 +20,27 @@ class CheckoutView extends StatefulWidget {
 class _CheckoutViewState extends State<CheckoutView> {
   int _currentstep = 0;
   Order? _selectedOrder;
+  final ScrollController _scrollController = ScrollController();
 
   void _gotoNextStep() {
     setState(() {
       _currentstep += 1;
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     });
   }
 
   void _gotoPreviousStep() {
     setState(() {
       _currentstep -= 1;
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     });
   }
 
@@ -42,18 +53,30 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Widget _buildStepIndicator() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-      color: AppTheme.customPanelColor3,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+      child: Column(
         children: [
-          _buildStep(0, 'Varukorg'),
-          _buildStepLine(0),
-          _buildStep(1, 'Personlig Information'),
-          _buildStepLine(1),
-          _buildStep(2, 'Leverans'),
-          _buildStepLine(2),
-          _buildStep(3, 'Betalning'),
+          const Text(
+            'Steg i kassan',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildStep(0, 'Din\nVarukorg'),
+              _buildStepLine(0),
+              _buildStep(1, 'Dina\nUppgifter'),
+              _buildStepLine(1),
+              _buildStep(2, 'Välj\nLeverans'),
+              _buildStepLine(2),
+              _buildStep(3, 'Din\nBetalning'),
+            ],
+          ),
         ],
       ),
     );
@@ -61,37 +84,41 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Widget _buildStep(int step, String label) {
     bool isActive = _currentstep >= step;
+    bool isCurrent = _currentstep == step;
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
-            color: isActive ? Colors.green : Colors.grey[400],
+            color: isCurrent ? Colors.green : (isActive ? Colors.white : Colors.grey[200]),
             shape: BoxShape.circle,
             border: Border.all(
               color: isActive ? Colors.green : Colors.grey[400]!,
-              width: 2,
+              width: 3,
             ),
           ),
           child: Center(
             child: Text(
               '${step + 1}',
               style: TextStyle(
-                color: Colors.white,
+                color: isCurrent ? Colors.white : (isActive ? Colors.green : Colors.grey[600]),
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 24,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Text(
           label,
+          textAlign: TextAlign.center,
           style: TextStyle(
             color: isActive ? Colors.green : Colors.grey[600],
             fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            fontSize: 18,
           ),
         ),
       ],
@@ -103,7 +130,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     return Expanded(
       child: Container(
         height: 2,
-        color: isActive ? Colors.green : Colors.grey[400],
+        color: isActive ? Colors.green : Colors.grey[300],
         margin: const EdgeInsets.symmetric(horizontal: 8),
       ),
     );
@@ -124,23 +151,35 @@ class _CheckoutViewState extends State<CheckoutView> {
               width: MediaQuery.of(context).size.width,
             ),
           ),
-          _buildStepIndicator(),
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Padding(
                 padding: const EdgeInsets.only(
-                  top: 120,
+                  top: 20,
                   left: 370,
                   right: 370,
                   bottom: 60,
                 ),
-                child: switch (_currentstep) {
-                  0 => _shoppingCart(handler),
-                  1 => _personalInfo(),
-                  2 => _deliveryInfo(),
-                  3 => _cardInfo(),
-                  _ => _personalInfo(),
-                },
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.customPanelColor3,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      margin: const EdgeInsets.only(bottom: 20),
+                      child: _buildStepIndicator(),
+                    ),
+                    switch (_currentstep) {
+                      0 => _shoppingCart(handler),
+                      1 => _personalInfo(),
+                      2 => _deliveryInfo(),
+                      3 => _cardInfo(),
+                      _ => _personalInfo(),
+                    },
+                  ],
+                ),
               ),
             ),
           ),
@@ -249,16 +288,23 @@ class _CheckoutViewState extends State<CheckoutView> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text(
-            'Varukorg',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            'Din Varukorg',
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Här är varorna du har valt att köpa',
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
           ),
           const SizedBox(height: 30),
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,
-            separatorBuilder: (context, index) =>
-                const Divider(color: Colors.grey),
+            separatorBuilder: (context, index) => const Divider(
+              color: Colors.grey,
+              thickness: 2,
+              height: 40,
+            ),
             itemBuilder: (context, index) {
               final item = items[index];
               return Padding(
@@ -267,56 +313,84 @@ class _CheckoutViewState extends State<CheckoutView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      width: 55,
-                      height: 55,
+                      width: 80,
+                      height: 80,
                       child: handler.getImage(item.product),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 20),
                     Expanded(
                       flex: 2,
                       child: Text(
                         item.product.name,
-                        style: const TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 20),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        '${item.amount} st',
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
+                    const SizedBox(width: 20),
+                    Column(
+                      children: [
+                        const Text(
+                          'Antal',
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${item.amount} st',
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        '${item.product.price} kr',
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.end,
-                      ),
+                    const SizedBox(width: 20),
+                    Column(
+                      children: [
+                        const Text(
+                          'Pris',
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${item.product.price} kr',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               );
             },
           ),
-          SizedBox(
-            height: 40,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              'Summa ${handler.getShoppingCart().items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount)).toStringAsFixed(2)} kr',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+          const SizedBox(height: 40),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Column(
+              children: [
+                const Text(
+                  'Totalt att betala:',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '${handler.getShoppingCart().items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount)).toStringAsFixed(2)} kr',
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           _actionButtons(),
         ],
       ),
@@ -325,24 +399,68 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Widget _actionButtons() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 0),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (_currentstep > 0)
-            ElevatedButton(
-              onPressed: _gotoPreviousStep,
-              child: Text('Tillbaka'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                onPressed: _gotoPreviousStep,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.arrow_back, size: 24),
+                    SizedBox(width: 8),
+                    Text('Tillbaka'),
+                  ],
+                ),
+              ),
             ),
           if (_currentstep < 3)
-            ElevatedButton(
-              onPressed: _gotoNextStep,
-              child: Text('Nästa'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                onPressed: _gotoNextStep,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Nästa'),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_forward, size: 24),
+                  ],
+                ),
+              ),
             ),
           if (_currentstep == 3)
-            ElevatedButton(
-              onPressed: _goToMain,
-              child: Text('Betala'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                onPressed: _goToMain,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Slutför köp'),
+                    SizedBox(width: 12),
+                    Icon(Icons.check_circle, size: 28),
+                  ],
+                ),
+              ),
             ),
         ],
       ),
