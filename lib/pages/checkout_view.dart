@@ -20,6 +20,8 @@ class CheckoutView extends StatefulWidget {
 
 class _CheckoutViewState extends State<CheckoutView> {
   int _currentstep = 0;
+  final GlobalKey<CustomerDetailsState> _customerFormKey = GlobalKey<CustomerDetailsState>();
+  final GlobalKey<CardDetailsState> _cardFormKey = GlobalKey<CardDetailsState>();
   Order? _selectedOrder;
   List<ShoppingItem>? _confirmedItems;
   double? _confirmedTotal;
@@ -166,14 +168,15 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.customPanelColor3,
-                        borderRadius: BorderRadius.circular(8),
+                    if (_currentstep != -1)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppTheme.customPanelColor3,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: _buildStepIndicator(),
                       ),
-                      margin: const EdgeInsets.only(bottom: 20),
-                      child: _buildStepIndicator(),
-                    ),
                     if (_currentstep == -1) 
                       _purchaseConfirmation(handler)
                     else
@@ -237,7 +240,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       ),
       child: Column(
         children: [
-          CustomerDetails(),
+          CustomerDetails(key: _customerFormKey),
           SizedBox(height: 50),
           _actionButtons(),
         ],
@@ -270,117 +273,7 @@ class _CheckoutViewState extends State<CheckoutView> {
             style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
           ),
           const SizedBox(height: 30),
-          CardDetails(),
-          const SizedBox(height: 40),
-          _actionButtons(),
-        ],
-      ),
-    );
-  }
-
-  Widget _orderSummary() {
-    final ImatDataHandler handler = Provider.of<ImatDataHandler>(context);
-    final cart = handler.getShoppingCart();
-    final items = cart.items;
-    final total = cart.items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount));
-
-    return Container(
-      color: AppTheme.customPanelColor3,
-      padding: const EdgeInsets.only(
-        top: AppTheme.paddingHuge,
-        left: AppTheme.paddingHuge,
-        right: AppTheme.paddingHuge,
-        bottom: AppTheme.paddingHuge,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Bekräfta din beställning',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Kontrollera din beställning en sista gång innan du slutför köpet',
-            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Din varukorg:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: items.length,
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            '${item.amount}x',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: Text(
-                              item.product.name,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                          Text(
-                            '${(item.product.price * item.amount).toStringAsFixed(2)} kr',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                const Divider(thickness: 2),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Totalt att betala:',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '${total.toStringAsFixed(2)} kr',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          CardDetails(key: _cardFormKey),
           const SizedBox(height: 40),
           _actionButtons(),
         ],
@@ -672,7 +565,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                onPressed: _gotoPreviousStep,
+                onPressed: (){
+                  _customerFormKey.currentState?.saveCustomer();
+                  _cardFormKey.currentState?.saveCard();
+                  _gotoPreviousStep();
+                },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -699,7 +596,6 @@ class _CheckoutViewState extends State<CheckoutView> {
               ),
               onPressed: () {
                 if (_currentstep == 3) {
-                  // Save cart information before placing the order
                   final handler = Provider.of<ImatDataHandler>(context, listen: false);
                   final cart = handler.getShoppingCart();
                   setState(() {
@@ -713,6 +609,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                     _currentstep = -1; // Show purchase confirmation
                   });
                 } else {
+                  _customerFormKey.currentState?.saveCustomer();
+                  _cardFormKey.currentState?.saveCard();
                   _gotoNextStep();
                 }
               },
