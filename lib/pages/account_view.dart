@@ -44,9 +44,7 @@ class _AccountViewState extends State<AccountView> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: AppTheme.paddingSmall),
           _header(context),
-          SizedBox(height: AppTheme.paddingSmall),
           ColoredBox(
             color: AppTheme.colorScheme.primary,
             child: SizedBox(
@@ -105,86 +103,39 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  Container _header(BuildContext context) {
+  Widget _header(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(
+        top: AppTheme.paddingSmall,
+        bottom: AppTheme.paddingSmall,
+      ),
       color: AppTheme.customPanelColor,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            onEnter: (_) => setState(() => _isHovered = true),
-            onExit: (_) => setState(() => _isHovered = false),
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
             child: GestureDetector(
-              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView())),
-              child: Image.asset('assets/images/logoiMat-removebg-preview (1).png', height: 70),
+              onTap: _goToMain,
+              child: Image.asset(
+                'assets/images/logoiMat-removebg-preview (1).png',
+                height: 70,
+              ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildHeaderButton(
-                icon: Icons.home,
-                label: 'Tillbaka till Startsidan',
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainView())),
-              ),
-              const SizedBox(width: 32),
-              _buildHeaderButton(
-                icon: Icons.history,
-                label: 'Se din Köphistorik',
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryView())),
-              ),
-              const SizedBox(width: 32),
-              _buildHeaderButton(
-                icon: Icons.person,
-                label: 'Ditt Konto',
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AccountView())),
-                isSelected: true,
-              ),
-              const SizedBox(width: 100),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(right: 30),
+            child: ElevatedButton(
+              onPressed: _goToMain,
+              child: Text('Tillbaka'),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeaderButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-    bool isSelected = false,
-  }) {
-    return SizedBox(
-      height: 60,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          backgroundColor: isSelected ? AppTheme.colorScheme.primary : Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 2),
-          ),
-        ),
-        icon: Icon(icon, 
-          size: 32, 
-          color: isSelected ? Colors.white : AppTheme.colorScheme.primary
-        ),
-        label: Text(
-          label,
-          style: TextStyle(
-            fontSize: 22,
-            color: isSelected ? Colors.white : AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: onPressed,
-      ),
-    );
-  }
+
 
   Widget _personalInfo() {
     return Container(
