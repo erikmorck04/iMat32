@@ -74,7 +74,9 @@ class _CheckoutViewState extends State<CheckoutView> {
               _buildStepLine(1),
               _buildStep(2, 'Välj\nLeverans'),
               _buildStepLine(2),
-              _buildStep(3, 'Din\nBetalning'),
+              _buildStep(3, 'Dina\nBetalningsuppgifter'),
+              _buildStepLine(3),
+              _buildStep(4, 'Bekräfta\nKöp'),
             ],
           ),
         ],
@@ -176,6 +178,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                       1 => _personalInfo(),
                       2 => _deliveryInfo(),
                       3 => _cardInfo(),
+                      4 => _orderSummary(),
                       _ => _personalInfo(),
                     },
                   ],
@@ -249,9 +252,133 @@ class _CheckoutViewState extends State<CheckoutView> {
         bottom: AppTheme.paddingHuge,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text(
+            'Betalningsinformation',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Fyll i dina kortuppgifter nedan',
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 30),
           CardDetails(),
-          SizedBox(height: 146),
+          const SizedBox(height: 40),
+          _actionButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _orderSummary() {
+    final ImatDataHandler handler = Provider.of<ImatDataHandler>(context);
+    final cart = handler.getShoppingCart();
+    final items = cart.items;
+    final total = cart.items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount));
+
+    return Container(
+      color: AppTheme.customPanelColor3,
+      padding: const EdgeInsets.only(
+        top: AppTheme.paddingHuge,
+        left: AppTheme.paddingHuge,
+        right: AppTheme.paddingHuge,
+        bottom: AppTheme.paddingHuge,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Bekräfta din beställning',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Kontrollera din beställning en sista gång innan du slutför köpet',
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 30),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Din varukorg:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: items.length,
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${item.amount}x',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Text(
+                              item.product.name,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                          Text(
+                            '${(item.product.price * item.amount).toStringAsFixed(2)} kr',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const Divider(thickness: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Totalt att betala:',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${total.toStringAsFixed(2)} kr',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
           _actionButtons(),
         ],
       ),
@@ -398,6 +525,12 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 
   Widget _actionButtons() {
+    String buttonText = _currentstep == 4 ? 'Slutför köp' : 'Nästa';
+    IconData buttonIcon = _currentstep == 4 ? Icons.check_circle : Icons.arrow_forward;
+    double horizontalPadding = _currentstep == 4 ? 40 : 30;
+    double verticalPadding = _currentstep == 4 ? 20 : 15;
+    double fontSize = _currentstep == 4 ? 24 : 20;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
@@ -422,46 +555,39 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
               ),
             ),
-          if (_currentstep < 3)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: verticalPadding,
                 ),
-                onPressed: _gotoNextStep,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Nästa'),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 24),
-                  ],
+                textStyle: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          if (_currentstep == 3)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                onPressed: _goToMain,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Slutför köp'),
-                    SizedBox(width: 12),
-                    Icon(Icons.check_circle, size: 28),
-                  ],
-                ),
+              onPressed: () {
+                if (_currentstep == 4) {
+                  final handler = Provider.of<ImatDataHandler>(context, listen: false);
+                  handler.placeOrder();
+                  _goToMain();
+                } else {
+                  _gotoNextStep();
+                }
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(buttonText),
+                  SizedBox(width: _currentstep == 4 ? 12 : 8),
+                  Icon(buttonIcon, size: _currentstep == 4 ? 28 : 24),
+                ],
               ),
             ),
+          ),
         ],
       ),
     );
