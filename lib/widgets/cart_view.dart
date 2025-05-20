@@ -14,7 +14,9 @@ class CartView extends StatelessWidget {
     var iMat = context.watch<ImatDataHandler>();
     var items = iMat.getShoppingCart().items;
 
-    return ListView(
+    return Scrollbar(thumbVisibility: true,
+    child:
+    ListView(
       children: [
         for (final item in items)
           Card(
@@ -68,6 +70,6 @@ class CartView extends StatelessWidget {
             ),
           ),
       ],
-    );
+    ),);
   }
 }
