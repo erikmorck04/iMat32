@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:api_test/app_theme.dart';
 import 'package:api_test/model/imat/order.dart';
 import 'package:api_test/model/imat/shopping_cart.dart';
+import 'package:api_test/model/imat/shopping_item.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/pages/main_view.dart';
 import 'package:api_test/widgets/card_details.dart';
@@ -20,6 +21,8 @@ class CheckoutView extends StatefulWidget {
 class _CheckoutViewState extends State<CheckoutView> {
   int _currentstep = 0;
   Order? _selectedOrder;
+  List<ShoppingItem>? _confirmedItems;
+  double? _confirmedTotal;
   final ScrollController _scrollController = ScrollController();
 
   void _gotoNextStep() {
@@ -74,9 +77,7 @@ class _CheckoutViewState extends State<CheckoutView> {
               _buildStepLine(1),
               _buildStep(2, 'Välj\nLeverans'),
               _buildStepLine(2),
-              _buildStep(3, 'Dina\nBetalningsuppgifter'),
-              _buildStepLine(3),
-              _buildStep(4, 'Bekräfta\nKöp'),
+              _buildStep(3, 'Betalnings\nInformation'),
             ],
           ),
         ],
@@ -173,14 +174,16 @@ class _CheckoutViewState extends State<CheckoutView> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: _buildStepIndicator(),
                     ),
-                    switch (_currentstep) {
-                      0 => _shoppingCart(handler),
-                      1 => _personalInfo(),
-                      2 => _deliveryInfo(),
-                      3 => _cardInfo(),
-                      4 => _orderSummary(),
-                      _ => _personalInfo(),
-                    },
+                    if (_currentstep == -1) 
+                      _purchaseConfirmation(handler)
+                    else
+                      switch (_currentstep) {
+                        0 => _shoppingCart(handler),
+                        1 => _personalInfo(),
+                        2 => _deliveryInfo(),
+                        3 => _cardInfo(),
+                        _ => _personalInfo(),
+                      },
                   ],
                 ),
               ),
@@ -524,12 +527,137 @@ class _CheckoutViewState extends State<CheckoutView> {
     );
   }
 
+  Widget _purchaseConfirmation(ImatDataHandler handler) {
+    final items = _confirmedItems ?? [];
+    final total = _confirmedTotal ?? 0.0;
+
+    return Container(
+      color: AppTheme.customPanelColor3,
+      padding: const EdgeInsets.all(AppTheme.paddingHuge),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+            size: 100,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Tack för ditt köp!',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Din order har mottagits och behandlas nu',
+            style: TextStyle(fontSize: 20, color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 40),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Ordersammanfattning:',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: items.length,
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${item.amount}x',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Text(
+                              item.product.name,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                          Text(
+                            '${(item.product.price * item.amount).toStringAsFixed(2)} kr',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const Divider(thickness: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Totalt:',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${total.toStringAsFixed(2)} kr',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+              textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            onPressed: _goToMain,
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Tillbaka till startsidan'),
+                SizedBox(width: 12),
+                Icon(Icons.home, size: 28),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _actionButtons() {
-    String buttonText = _currentstep == 4 ? 'Slutför köp' : 'Nästa';
-    IconData buttonIcon = _currentstep == 4 ? Icons.check_circle : Icons.arrow_forward;
-    double horizontalPadding = _currentstep == 4 ? 40 : 30;
-    double verticalPadding = _currentstep == 4 ? 20 : 15;
-    double fontSize = _currentstep == 4 ? 24 : 20;
+    String buttonText = _currentstep == 3 ? 'Slutför köp' : 'Nästa';
+    IconData buttonIcon = _currentstep == 3 ? Icons.check_circle : Icons.arrow_forward;
+    double horizontalPadding = _currentstep == 3 ? 40 : 30;
+    double verticalPadding = _currentstep == 3 ? 20 : 15;
+    double fontSize = _currentstep == 3 ? 24 : 20;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
@@ -570,10 +698,20 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
               ),
               onPressed: () {
-                if (_currentstep == 4) {
+                if (_currentstep == 3) {
+                  // Save cart information before placing the order
                   final handler = Provider.of<ImatDataHandler>(context, listen: false);
+                  final cart = handler.getShoppingCart();
+                  setState(() {
+                    _confirmedItems = List.from(cart.items);
+                    _confirmedTotal = cart.items.fold(0.0, (sum, item) => sum! + (item.product.price * item.amount));
+                  });
+
+                  // Place the order and show confirmation
                   handler.placeOrder();
-                  _goToMain();
+                  setState(() {
+                    _currentstep = -1; // Show purchase confirmation
+                  });
                 } else {
                   _gotoNextStep();
                 }
