@@ -4,6 +4,7 @@ import 'package:api_test/model/imat/product.dart';
 import 'package:api_test/model/imat/shopping_item.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:api_test/pages/account_view.dart';
+import 'package:api_test/pages/checkout_view.dart';
 import 'package:api_test/pages/main_view.dart';
 import 'package:api_test/widgets/buy_button.dart';
 import 'package:api_test/widgets/cart_view.dart';
@@ -87,7 +88,7 @@ class _HistoryViewState extends State<HistoryView> {
                 // currently selected order.
                 Expanded(child: _orderDetails(_selectedOrder)),
                 Container(
-                  width: 400,
+                  width: 370,
                   //color: Colors.blueGrey,
                   child: _shoppingCart(iMat),
                 ),
@@ -101,35 +102,90 @@ class _HistoryViewState extends State<HistoryView> {
 
   Widget _shoppingCart(ImatDataHandler iMat) {
     return Container(
-      width: 300,
+      width: 370,
       constraints: BoxConstraints(
-        minHeight:
-            MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
+        minHeight: MediaQuery.of(context).size.height - AppTheme.paddingMedium * 2,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(-2, 0), // changes position of shadow
-          ),
-        ],
-      ),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 1,
+          blurRadius: 5,
+          offset: Offset(-2, 0), // changes position of shadow
+        ),
+      ],
+
+      ), 
       padding: EdgeInsets.all(AppTheme.paddingMedium),
       child: Column(
-        children: [
-          Text('Kundvagn'),
-          Expanded(child: CartView()),
-          ElevatedButton(
-            onPressed: () {
-              iMat.placeOrder();
-            },
-            child: Text('Köp!'),
+        children: [Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Varukorg', style: TextStyle(fontSize: 30),),
+            SizedBox(width: 15,),
+            Icon(Icons.shopping_cart, size: 35,),],),
+
+        Expanded(child: CartView()),
+
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.customPanelColor,
+            borderRadius: BorderRadius.circular(15)
           ),
-        ],
-      ),
+          height: 100,
+          //padding: EdgeInsets.all(20),
+          child: Row(
+          
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text(
+                  '${iMat.getShoppingCart().items.length} produkter',
+                          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+                          ),
+                ),
+                Text(
+                          '${iMat.getShoppingCart().items.fold(0.0, (sum, item) => sum + (item.product.price * item.amount)).toStringAsFixed(2)} kr',
+                          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+                          ),
+                        ),],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                ElevatedButton(
+                onPressed: () {
+                  iMat.shoppingCartClear();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                ),
+                child: Text('Töm varukorg'),
+              ),
+              SizedBox(height: AppTheme.paddingSmall),
+              ElevatedButton(
+            onPressed: () {
+              
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
+            },
+            
+            child: Text('Köp!'),
+          ),],),
+              
+            ],
+          ),
+        ),
+        ],)
+        
+      ,
     );
   }
 
@@ -312,6 +368,20 @@ class _HistoryViewState extends State<HistoryView> {
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     SizedBox(height: AppTheme.paddingSmall),
+                    Align(
+    alignment: Alignment.centerRight,
+    child: Padding(
+      padding: const EdgeInsets.only(right: 32.0, bottom: 8.0),
+      child: Text(
+        'Lägg till i varukorg',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: AppTheme.colorScheme.primary,
+        ),
+      ),
+    ),
+  ),
                     for (final item in order.items)
                       Container(
                         decoration: BoxDecoration(
@@ -391,7 +461,21 @@ class _HistoryViewState extends State<HistoryView> {
         ],
       );
     }
-    return SizedBox.shrink();
+    // Show this when no order is selected
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Text(
+          'Vänligen välj ett tidigare köp till vänster.',
+          style: TextStyle(
+            fontSize: 24,
+            color: AppTheme.colorScheme.primary,
+            fontWeight: FontWeight.w500,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 
 void _showAccount(context) {

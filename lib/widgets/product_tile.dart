@@ -76,11 +76,17 @@ class ProductTile extends StatelessWidget {
             ? Icon(Icons.star, color: Colors.orange)
             : Icon(Icons.star_border, color: Colors.orange);
 
-    return IconButton(
+    return ElevatedButton(
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text('Favorit'), SizedBox(width: 8), icon],
+        ),
+      ),
       onPressed: () {
         iMat.toggleFavorite(product);
       },
-      icon: icon,
+      
     );
   }
 }
