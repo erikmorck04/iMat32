@@ -28,30 +28,6 @@ final Map<String, IconData> mainCategoryIcons = {
   'Övrigt': Icons.category,
 };
 
-final Map<String, ProductCategory> swedishCategoryNames = {
-  'grönsaker': ProductCategory.CABBAGE,
-  'frukt': ProductCategory.FRUIT,
-  'citrusfrukter': ProductCategory.CITRUS_FRUIT,
-  'exotiska frukter': ProductCategory.EXOTIC_FRUIT,
-  'bär': ProductCategory.BERRY,
-  'meloner': ProductCategory.MELONS,
-  'rotfrukter': ProductCategory.ROOT_VEGETABLE,
-  'pasta': ProductCategory.PASTA,
-  'potatis & ris': ProductCategory.POTATO_RICE,
-  'mjöl, socker & salt': ProductCategory.FLOUR_SUGAR_SALT,
-  'nötter & frön': ProductCategory.NUTS_AND_SEEDS,
-  'kryddor': ProductCategory.HERB,
-  'varma drycker': ProductCategory.HOT_DRINKS,
-  'kalla drycker': ProductCategory.COLD_DRINKS,
-  'kött': ProductCategory.MEAT,
-  'fisk': ProductCategory.FISH,
-  'mejeri': ProductCategory.DAIRIES,
-  'bröd': ProductCategory.BREAD,
-  'godis': ProductCategory.SWEET,
-};
-
-
-
   @override
   Widget build(BuildContext context) {
     var iMat = context.watch<ImatDataHandler>();
@@ -163,8 +139,10 @@ final Map<String, ProductCategory> swedishCategoryNames = {
               SizedBox(height: AppTheme.paddingSmall),
               ElevatedButton(
             onPressed: () {
+              if (iMat.getShoppingCart().items.isNotEmpty) {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
+              }
               
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
             },
             
             child: Text('Köp!'),
@@ -312,147 +290,141 @@ final Map<String, ProductCategory> swedishCategoryNames = {
       color: AppTheme.customPanelColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => setState(() => _isHovered = true),
-                onExit: (_) => setState(() => _isHovered = false), 
-              child:
-              GestureDetector(
+          // Logo
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) => setState(() => _isHovered = true),
+              onExit: (_) => setState(() => _isHovered = false),
+              child: GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
                 },
-                
-                  child: Image.asset('assets/images/logoiMat-removebg-preview (1).png',height: 70,)
-                ,
+                child: Image.asset('assets/images/logoiMat-removebg-preview (1).png', height: 70),
               ),
-            )
             ),
-            SizedBox(width: 32),
-          Container(width: 700,
-            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Sök produkter...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-                fillColor: Colors.white,
-                filled: true,
+          ),
+          // Search bar
+          SizedBox(width: 180),
+          Container(
+            width: 700,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Sök produkter...',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                  fillColor: Colors.white,
+                  filled: true,
                 ),
                 onChanged: (value) {
                   var iMat = Provider.of<ImatDataHandler>(context, listen: false);
                   if (value.isEmpty) {
-    iMat.selectAllProducts();
-  } else {
-    final lowerValue = value.toLowerCase().trim();
-    MapEntry<String, ProductCategory>? matchedCategory;
-    try {
-      matchedCategory = swedishCategoryNames.entries.firstWhere(
-        (entry) => entry.key == lowerValue,
-      );
-    } catch (e) {
-      matchedCategory = null;
-    }
-    if (matchedCategory != null) {
-      iMat.selectSelection(iMat.findProductsByCategory(matchedCategory.value));
-    } else {
-      iMat.selectSelection(iMat.findProducts(value));
-    }
-  }
+                    iMat.selectAllProducts();
+                  } else {
+                    iMat.selectSelection(iMat.findProducts(value));
+                  }
                 },
-            )),),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [SizedBox(
-      height: 50,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+              ),
+            ),
           ),
-        ),
-        icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Hem',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainView()),);
-        },
-      ),
-    ),
-    SizedBox(width: 32),
-              SizedBox(
-      height: 50, // Match your search bar height
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Köphistorik',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          dbugPrint('Historik-knapp');
-          _showHistory(context);
-        },
-      ),
-    ),
-              SizedBox(width: 32),
-    SizedBox(
-      height: 50,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Användare',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          _showAccount(context);
-        },
-      ),
-    ),
-    
-    SizedBox(width: 100)
-            ],
+          // Buttons
+          Flexible(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      backgroundColor: Colors.white,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                      ),
+                    ),
+                    icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
+                    label: Text(
+                      'Hem',
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: AppTheme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainView()),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 16),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      backgroundColor: Colors.white,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                      ),
+                    ),
+                    icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
+                    label: Text(
+                      'Köphistorik',
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: AppTheme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      dbugPrint('Historik-knapp');
+                      _showHistory(context);
+                    },
+                  ),
+                ),
+                SizedBox(width: 16),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      backgroundColor: Colors.white,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                      ),
+                    ),
+                    icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
+                    label: Text(
+                      'Användare',
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: AppTheme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      _showAccount(context);
+                    },
+                  ),
+                ),
+                SizedBox(width: 32),
+              ],
+            ),
           ),
         ],
       ),

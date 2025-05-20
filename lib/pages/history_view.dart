@@ -194,117 +194,112 @@ class _HistoryViewState extends State<HistoryView> {
       color: AppTheme.customPanelColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => setState(() => _isHovered = true),
-                onExit: (_) => setState(() => _isHovered = false), 
-              child:
-              GestureDetector(
+          // Logo
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) => setState(() => _isHovered = true),
+              onExit: (_) => setState(() => _isHovered = false),
+              child: GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
                 },
-                
-                  child: Image.asset('assets/images/logoiMat-removebg-preview (1).png',height: 70,)
-                ,
+                child: Image.asset('assets/images/logoiMat-removebg-preview (1).png', height: 70),
               ),
-            )
             ),
-            SizedBox(width: 32),
-          Container(width: 700,
-            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
-            ),),
-
+          ),
+          // Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [SizedBox(
-      height: 50,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Hem',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainView()),);
-        },
-      ),
-    ),
-    SizedBox(width: 32),
+            children: [
               SizedBox(
-      height: 50, // Match your search bar height
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Köphistorik',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          
-          _showHistory(context);
-        },
-      ),
-    ),
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    backgroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                    ),
+                  ),
+                  icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
+                  label: Text(
+                    'Hem',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainView()),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    backgroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                    ),
+                  ),
+                  icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
+                  label: Text(
+                    'Köphistorik',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    _showHistory(context);
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    backgroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                    ),
+                  ),
+                  icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
+                  label: Text(
+                    'Användare',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    _showAccount(context);
+                  },
+                ),
+              ),
               SizedBox(width: 32),
-    SizedBox(
-      height: 50,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
-          ),
-        ),
-        icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
-        label: Text(
-          'Användare',
-          style: TextStyle(
-            fontSize: 22,
-            color: AppTheme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {
-          _showAccount(context);
-        },
-      ),
-    ),
-    
-    SizedBox(width: 100)
             ],
           ),
         ],
@@ -314,7 +309,7 @@ class _HistoryViewState extends State<HistoryView> {
 
   Widget _ordersList(BuildContext context, List<Order> orders, Function onTap) {
     return ListView(
-      children: [for (final order in orders) _orderInfo(order, onTap)],
+      children: [for (final order in orders.reversed) _orderInfo(order, onTap)],
     );
   }
 
@@ -382,7 +377,7 @@ class _HistoryViewState extends State<HistoryView> {
       ),
     ),
   ),
-                    for (final item in order.items)
+                    for (final item in order.items.reversed)
                       Container(
                         decoration: BoxDecoration(
                           border: Border(
