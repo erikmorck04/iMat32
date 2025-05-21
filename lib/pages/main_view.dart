@@ -6,6 +6,7 @@ import 'package:api_test/pages/account_view.dart';
 import 'package:api_test/pages/checkout_view.dart';
 import 'package:api_test/pages/history_view.dart';
 import 'package:api_test/widgets/cart_view.dart';
+import 'package:api_test/widgets/filter_items_button.dart';
 import 'package:api_test/widgets/product_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -166,7 +167,7 @@ final Map<String, IconData> mainCategoryIcons = {
           SizedBox(height: AppTheme.paddingHuge),
           // Fixed buttons at the top
           SizedBox(
-            width: 200,
+            width: 250,
             height: 50,
             child: Container(
               decoration: BoxDecoration(
@@ -183,7 +184,7 @@ final Map<String, IconData> mainCategoryIcons = {
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 200,
+            width: 250,
             height: 50,
             child: Container(
               decoration: BoxDecoration(
@@ -200,27 +201,23 @@ final Map<String, IconData> mainCategoryIcons = {
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 200,
+            width: 250,
             height: 50,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: ElevatedButton(
-                onPressed: () {
-                  var products = iMat.products;
-                  iMat.selectSelection([
-                    products[4],
-                    products[45],
-                    products[68],
-                    products[102],
-                    products[110],
-                  ]);
-                },
-                child: Text('Urval', style: TextStyle(fontSize: 25)),
-              ),
-            ),
+            child: ProductSortDropdown(imat: iMat),
+              // child: ElevatedButton(
+              //   onPressed: () {
+              //     var products = iMat.products;
+              //     iMat.selectSelection([
+              //       products[4],
+              //       products[45],
+              //       products[68],
+              //       products[102],
+              //       products[110],
+              //     ]);
+              //   },
+              //   child: Text('Urval', style: TextStyle(fontSize: 25)),
+              // ),
+            
           ),
           SizedBox(height: AppTheme.paddingMedium),
           // Expanded ListView for categories
