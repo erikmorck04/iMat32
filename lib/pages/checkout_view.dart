@@ -28,6 +28,11 @@ class _CheckoutViewState extends State<CheckoutView> {
   final ScrollController _scrollController = ScrollController();
 
   void _gotoNextStep() {
+    // Spara formulärdata innan vi går till nästa steg
+    if (_currentstep == 1) {
+      _customerFormKey.currentState?.saveCustomer();
+    }
+    
     setState(() {
       _currentstep += 1;
       _scrollController.animateTo(
@@ -281,6 +286,9 @@ class _CheckoutViewState extends State<CheckoutView> {
     );
   }
 
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
+
   Widget _deliveryInfo() {
     return Container(
       color: AppTheme.customPanelColor3,
@@ -291,9 +299,120 @@ class _CheckoutViewState extends State<CheckoutView> {
         bottom: AppTheme.paddingHuge,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Delivery details widget goes here
-          SizedBox(height: 146),
+          const Text(
+            'Välj Leveranstid',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Välj när du vill få dina varor levererade',
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 40),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.calendar_today),
+                        label: Text(_selectedDate == null 
+                          ? 'Välj datum' 
+                          : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
+                        onPressed: () async {
+                          final now = DateTime.now();
+                          final firstDate = now.add(const Duration(days: 1));
+                          final lastDate = now.add(const Duration(days: 14));
+                          
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: _selectedDate ?? firstDate,
+                            firstDate: firstDate,
+                            lastDate: lastDate,
+                          );
+                          
+                          if (picked != null) {
+                            setState(() {
+                              _selectedDate = picked;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.access_time),
+                        label: Text(_selectedTime == null 
+                          ? 'Välj tid' 
+                          : '${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}'),
+                        onPressed: () async {
+                          final picked = await showTimePicker(
+                            context: context,
+                            initialTime: _selectedTime ?? TimeOfDay.now(),
+                            builder: (context, child) {
+                              return MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  alwaysUse24HourFormat: true,
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          
+                          if (picked != null) {
+                            setState(() {
+                              _selectedTime = picked;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                if (_selectedDate != null && _selectedTime != null) ...[
+                  const SizedBox(height: 30),
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.green),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Din leverans är planerad till ${_selectedDate!.day}/${_selectedDate!.month} kl ${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
           _actionButtons(),
         ],
       ),
@@ -595,6 +714,16 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
               ),
               onPressed: () {
+                if (_currentstep == 2 && (_selectedDate == null || _selectedTime == null)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Vänligen välj både leveransdatum och tid'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
                 if (_currentstep == 3) {
                   final handler = Provider.of<ImatDataHandler>(context, listen: false);
                   final cart = handler.getShoppingCart();
