@@ -1,3 +1,4 @@
+import 'package:api_test/app_theme.dart';
 import 'package:api_test/model/imat/product.dart';
 import 'package:api_test/model/imat_data_handler.dart';
 import 'package:flutter/material.dart';
@@ -12,27 +13,27 @@ class ProductSortDropdown extends StatefulWidget {
 }
 
 class _ProductSortDropdownState extends State<ProductSortDropdown> {
-  String selectedSort = 'Namn (A-Ö)';
+  String selectedSort = 'Namn A-Ö';
   final List<String> sortOptions = [
-    'Namn (A-Ö)',
-    'Namn (Ö-A)',
-    'Pris (Lågt-Högt)',
-    'Pris (Högt-Lågt)',
+    'Namn A-Ö',
+    'Namn Ö-A',
+    'Pris Lågt-Högt',
+    'Pris Högt-Lågt',
   ];
 
   void _sortProducts(String sort) {
     List<Product> sorted = List.from(widget.imat.selectProducts);
     switch (sort) {
-      case 'Namn (A-Ö)':
+      case 'Namn A-Ö':
         sorted.sort((a, b) => a.name.compareTo(b.name));
         break;
-      case 'Namn (Ö-A)':
+      case 'Namn Ö-A':
         sorted.sort((a, b) => b.name.compareTo(a.name));
         break;
-      case 'Pris (Lågt-Högt)':
+      case 'Pris Lågt-Högt':
         sorted.sort((a, b) => a.price.compareTo(b.price));
         break;
-      case'Pris (Högt-Lågt)':
+      case'Pris Högt-Lågt':
         sorted.sort((a,b) => b.price.compareTo(a.price));
         break;
     }
@@ -41,16 +42,19 @@ class _ProductSortDropdownState extends State<ProductSortDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('Sortera', style: TextStyle(fontSize: 18)),
-        SizedBox(width: 10),
-        DropdownButton<String>(
+    return Container(
+      decoration: BoxDecoration(
+        //color: const Color.fromARGB(255, 224, 228, 230),
+        border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
+        borderRadius: BorderRadius.circular(25)
+      ),
+      child: DropdownButtonHideUnderline(child: DropdownButton<String>(
+          padding: EdgeInsets.symmetric(horizontal: 25),
           value: selectedSort,
           items: sortOptions.map((String value){
             return DropdownMenuItem<String>(
               value: value,
-              child: Text(value),
+              child: Text(value, style: TextStyle(fontSize: 25),),
             );
           }).toList(),
           onChanged: (String? newValue) {
@@ -61,7 +65,7 @@ class _ProductSortDropdownState extends State<ProductSortDropdown> {
             });
           },
         ),
-      ],
+      ),
     );
   }
 }

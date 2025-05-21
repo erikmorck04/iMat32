@@ -156,7 +156,7 @@ class MainView extends StatefulWidget {
           SizedBox(height: AppTheme.paddingHuge),
           // Fixed buttons at the top
           SizedBox(
-            width: 200,
+            width: 250,
             height: 50,
             child: Container(
               decoration: BoxDecoration(
@@ -173,7 +173,7 @@ class MainView extends StatefulWidget {
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 200,
+            width: 250,
             height: 50,
             child: Container(
               decoration: BoxDecoration(
@@ -190,18 +190,9 @@ class MainView extends StatefulWidget {
           ),
           SizedBox(height: AppTheme.paddingMedium),
           SizedBox(
-            width: 200,
+            width: 250,
             height: 50,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Column(
-                children: [
-                  ProductSortDropdown(imat: iMat),
-                ],
-              ),
+            child: ProductSortDropdown(imat: iMat),
               // child: ElevatedButton(
               //   onPressed: () {
               //     var products = iMat.products;
@@ -215,7 +206,7 @@ class MainView extends StatefulWidget {
               //   },
               //   child: Text('Urval', style: TextStyle(fontSize: 25)),
               // ),
-            ),
+            
           ),
           SizedBox(height: AppTheme.paddingMedium),
           // Expanded ListView for categories
