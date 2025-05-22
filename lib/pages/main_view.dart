@@ -19,7 +19,7 @@ class MainView extends StatefulWidget {
 
   class _MainViewState extends State<MainView> {
   bool _isHovered = false; // State to track hover
-
+  ProductCategory? _selectedCategory; // State to track selected category
 
 final Map<String, IconData> mainCategoryIcons = {
   'Frukt & Grönt': Icons.eco,
@@ -176,6 +176,9 @@ final Map<String, IconData> mainCategoryIcons = {
               ),
               child: ElevatedButton(
                 onPressed: () {
+                  setState(() {
+                    _selectedCategory = null; // Reset selected category
+                  });
                   iMat.selectAllProducts();
                 },
                 child: Text('Visa allt', style: TextStyle(fontSize: 25)),
@@ -193,6 +196,9 @@ final Map<String, IconData> mainCategoryIcons = {
               ),
               child: ElevatedButton(
                 onPressed: () {
+                  setState(() {
+                    _selectedCategory = null; // Reset selected category
+                  });
                   iMat.selectFavorites();
                 },
                 child: Text('Favoriter', style: TextStyle(fontSize: 25)),
@@ -454,13 +460,30 @@ final Map<String, IconData> mainCategoryIcons = {
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     ),
     children: categories.entries.map((entry) {
-      return ListTile(
-        
-        contentPadding: EdgeInsets.symmetric(horizontal: 32),
-        title: Text(entry.key),
-        onTap: () {
-          iMat.selectSelection(
-            iMat.findProductsByCategory(entry.value),
+      final hoverNotifier = ValueNotifier<bool>(false);
+      return ValueListenableBuilder<bool>(
+        valueListenable: hoverNotifier,
+        builder: (context, isHovered, child) {
+          return MouseRegion(
+            onEnter: (_) => hoverNotifier.value = true,
+            onExit: (_) => hoverNotifier.value = false,
+            child: Container(
+              color: (_selectedCategory == entry.value)
+                  ? AppTheme.colorScheme.primary.withOpacity(0.18)
+                  : (isHovered ? AppTheme.colorScheme.primary.withOpacity(0.08) : Colors.transparent),
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 32),
+                title: Text(entry.key),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = entry.value;
+                  });
+                  iMat.selectSelection(
+                    iMat.findProductsByCategory(entry.value),
+                  );
+                },
+              ),
+            ),
           );
         },
       );
