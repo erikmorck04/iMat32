@@ -771,6 +771,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                   setState(() {
                     _confirmedItems = List.from(cart.items);
                     _confirmedTotal = cart.items.fold(0.0, (sum, item) => sum! + (item.product.price * item.amount));
+                    _customerFormKey.currentState?.saveCustomer();
+                    _cardFormKey.currentState?.saveCard();
                   });
 
                   // Place the order and show confirmation
