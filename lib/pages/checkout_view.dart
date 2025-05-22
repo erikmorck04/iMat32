@@ -153,7 +153,9 @@ class _CheckoutViewState extends State<CheckoutView> {
     return Scaffold(
       body: Column(
         children: [
+          
           _header(context),
+         
           ColoredBox(
             color: Colors.black,
             child: SizedBox(
@@ -202,7 +204,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     );
   }
 
-  Widget _header(BuildContext context) {
+  Container _header(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
         top: AppTheme.paddingSmall,
