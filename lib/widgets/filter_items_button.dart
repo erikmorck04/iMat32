@@ -19,7 +19,10 @@ class _ProductSortDropdownState extends State<ProductSortDropdown> {
     'Namn Ö-A',
     'Pris Lågt-Högt',
     'Pris Högt-Lågt',
+    'Ekologiskt',
   ];
+
+  bool _isHovered = false;
 
   void _sortProducts(String sort) {
     List<Product> sorted = List.from(widget.imat.selectProducts);
@@ -33,8 +36,11 @@ class _ProductSortDropdownState extends State<ProductSortDropdown> {
       case 'Pris Lågt-Högt':
         sorted.sort((a, b) => a.price.compareTo(b.price));
         break;
-      case'Pris Högt-Lågt':
-        sorted.sort((a,b) => b.price.compareTo(a.price));
+      case 'Pris Högt-Lågt':
+        sorted.sort((a, b) => b.price.compareTo(a.price));
+        break;
+      case 'Ekologiskt':
+        sorted = sorted.where((p) => p.isEcological == true).toList();
         break;
     }
     widget.imat.selectSelection(sorted);
@@ -42,28 +48,60 @@ class _ProductSortDropdownState extends State<ProductSortDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        //color: const Color.fromARGB(255, 224, 228, 230),
-        border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
-        borderRadius: BorderRadius.circular(25)
-      ),
-      child: DropdownButtonHideUnderline(child: DropdownButton<String>(
-          padding: EdgeInsets.symmetric(horizontal: 25),
-          value: selectedSort,
-          items: sortOptions.map((String value){
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value, style: TextStyle(fontSize: 25),),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            if (newValue == null) return;
-            setState(() {
-              selectedSort = newValue;
-              _sortProducts(newValue);
-            });
-          },
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 50),
+        width: 250,
+        height: 50,
+        decoration: BoxDecoration(
+          color: _isHovered
+              ? Colors.grey.withOpacity(0.04)
+              : Colors.white,
+          border: Border.all(
+            color: AppTheme.colorScheme.primary,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: _isHovered ? 6 : 2,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        alignment: Alignment.center,
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: selectedSort,
+            icon: Icon(Icons.arrow_drop_down, color: AppTheme.colorScheme.primary),
+            style: TextStyle(fontSize: 25, color: AppTheme.colorScheme.primary, fontWeight: FontWeight.normal),
+            isExpanded: true,
+            dropdownColor: Colors.white,
+            items: sortOptions.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Center(
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 25, color: AppTheme.colorScheme.primary),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue == null) return;
+              setState(() {
+                selectedSort = newValue;
+                _sortProducts(newValue);
+              });
+            },
+          ),
         ),
       ),
     );
