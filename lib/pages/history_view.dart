@@ -132,7 +132,8 @@ class _HistoryViewState extends State<HistoryView> {
         Container(
           decoration: BoxDecoration(
             color: AppTheme.customPanelColor,
-            borderRadius: BorderRadius.circular(15)
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
           ),
           height: 100,
           //padding: EdgeInsets.all(20),
@@ -167,17 +168,29 @@ class _HistoryViewState extends State<HistoryView> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
+                  side: BorderSide(
+                    color: AppTheme.colorScheme.primary,
+                    width: 1,
+                  ),
                 ),
-                child: Text('Töm varukorg'),
+                child: Text('Töm varukorg ', style: TextStyle(fontSize: 15),),
               ),
               SizedBox(height: AppTheme.paddingSmall),
               ElevatedButton(
             onPressed: () {
+              if (iMat.getShoppingCart().items.isNotEmpty) {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
+              }
               
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckoutView()));
             },
-            
-            child: Text('Köp!'),
+            style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  side: BorderSide(
+                    color: AppTheme.colorScheme.primary,
+                    width: 1,
+                  ),
+                ),
+            child: Text('   Till kassan   ', style: TextStyle(fontSize: 15),),
           ),],),
               
             ],
