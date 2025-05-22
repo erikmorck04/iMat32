@@ -289,6 +289,21 @@ class _CheckoutViewState extends State<CheckoutView> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
+  String _getDeliveryWindowText() {
+    switch (_selectedTime?.hour) {
+      case 8:
+        return 'mellan kl 8:00-12:00';
+      case 12:
+        return 'mellan kl 12:00-15:00';
+      case 15:
+        return 'mellan kl 15:00-18:00';
+      case 18:
+        return 'mellan kl 18:00-21:00';
+      default:
+        return '';
+    }
+  }
+
   Widget _deliveryInfo() {
     return Container(
       color: AppTheme.customPanelColor3,
@@ -354,31 +369,29 @@ class _CheckoutViewState extends State<CheckoutView> {
                     ),
                     const SizedBox(width: 20),
                     Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.access_time),
-                        label: Text(_selectedTime == null 
-                          ? 'Välj tid' 
-                          : '${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}'),
-                        onPressed: () async {
-                          final picked = await showTimePicker(
-                            context: context,
-                            initialTime: _selectedTime ?? TimeOfDay.now(),
-                            builder: (context, child) {
-                              return MediaQuery(
-                                data: MediaQuery.of(context).copyWith(
-                                  alwaysUse24HourFormat: true,
-                                ),
-                                child: child!,
-                              );
-                            },
-                          );
-                          
-                          if (picked != null) {
-                            setState(() {
-                              _selectedTime = picked;
-                            });
-                          }
-                        },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'Välj leveranstid',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _deliveryTimeButton('Förmiddag\n8:00-12:00', TimeOfDay(hour: 8, minute: 0)),
+                              _deliveryTimeButton('Lunch\n12:00-15:00', TimeOfDay(hour: 12, minute: 0)),
+                              _deliveryTimeButton('Eftermiddag\n15:00-18:00', TimeOfDay(hour: 15, minute: 0)),
+                              _deliveryTimeButton('Kväll\n18:00-21:00', TimeOfDay(hour: 18, minute: 0)),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -398,7 +411,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Din leverans är planerad till ${_selectedDate!.day}/${_selectedDate!.month} kl ${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}',
+                            'Din leverans är planerad till ${_selectedDate!.day}/${_selectedDate!.month} ${_getDeliveryWindowText()}',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -415,6 +428,34 @@ class _CheckoutViewState extends State<CheckoutView> {
           const SizedBox(height: 40),
           _actionButtons(),
         ],
+      ),
+    );
+  }
+
+  Widget _deliveryTimeButton(String label, TimeOfDay time) {
+    bool isSelected = _selectedTime?.hour == time.hour;
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isSelected ? Colors.green : Colors.white,
+        foregroundColor: isSelected ? Colors.white : Colors.black,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        side: BorderSide(
+          color: isSelected ? Colors.green : Colors.grey.shade300,
+          width: 2,
+        ),
+      ),
+      onPressed: () {
+        setState(() {
+          _selectedTime = time;
+        });
+      },
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
       ),
     );
   }
