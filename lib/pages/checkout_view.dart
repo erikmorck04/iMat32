@@ -5,6 +5,8 @@ import 'package:api_test/model/imat/order.dart';
 import 'package:api_test/model/imat/shopping_cart.dart';
 import 'package:api_test/model/imat/shopping_item.dart';
 import 'package:api_test/model/imat_data_handler.dart';
+import 'package:api_test/pages/account_view.dart';
+import 'package:api_test/pages/history_view.dart';
 import 'package:api_test/pages/main_view.dart';
 import 'package:api_test/widgets/card_details.dart';
 import 'package:api_test/widgets/customer_details.dart';
@@ -26,6 +28,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   List<ShoppingItem>? _confirmedItems;
   double? _confirmedTotal;
   final ScrollController _scrollController = ScrollController();
+  bool _isHovered = false;
 
   void _gotoNextStep() {
     // Spara formulärdata innan vi går till nästa steg
@@ -204,32 +207,119 @@ class _CheckoutViewState extends State<CheckoutView> {
     );
   }
 
-  Container _header(BuildContext context) {
+  Widget _header(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
-        top: AppTheme.paddingSmall,
-        bottom: AppTheme.paddingSmall,
-      ),
+      padding: EdgeInsets.only(top: AppTheme.paddingSmall, bottom: AppTheme.paddingSmall),
       color: AppTheme.customPanelColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Logo
           Padding(
             padding: const EdgeInsets.only(left: 30),
-            child: GestureDetector(
-              onTap: _goToMain,
-              child: Image.asset(
-                'assets/images/logoiMat-removebg-preview (1).png',
-                height: 70,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) => setState(() => _isHovered = true),
+              onExit: (_) => setState(() => _isHovered = false),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
+                },
+                child: Image.asset('assets/images/logoiMat-removebg-preview (1).png', height: 70),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 30),
-            child: ElevatedButton(
-              onPressed: _goToMain,
-              child: Text('Tillbaka'),
-            ),
+          // Buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    backgroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                    ),
+                  ),
+                  icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
+                  label: Text(
+                    'Hem',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainView()),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    backgroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                    ),
+                  ),
+                  icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
+                  label: Text(
+                    'Köphistorik',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HistoryView()));(context);
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    backgroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                    ),
+                  ),
+                  icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
+                  label: Text(
+                    'Användare',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountView()));
+                  },
+                ),
+              ),
+              SizedBox(width: 32),
+            ],
           ),
         ],
       ),
