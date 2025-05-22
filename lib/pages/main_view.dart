@@ -99,7 +99,8 @@ final Map<String, IconData> mainCategoryIcons = {
         Container(
           decoration: BoxDecoration(
             color: AppTheme.customPanelColor,
-            borderRadius: BorderRadius.circular(15)
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppTheme.colorScheme.primary, width: 2),
           ),
           height: 100,
           //padding: EdgeInsets.all(20),
@@ -134,8 +135,12 @@ final Map<String, IconData> mainCategoryIcons = {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
+                  side: BorderSide(
+                    color: AppTheme.colorScheme.primary,
+                    width: 1,
+                  ),
                 ),
-                child: Text('Töm varukorg'),
+                child: Text('Töm varukorg ', style: TextStyle(fontSize: 15),),
               ),
               SizedBox(height: AppTheme.paddingSmall),
               ElevatedButton(
@@ -145,8 +150,14 @@ final Map<String, IconData> mainCategoryIcons = {
               }
               
             },
-            
-            child: Text('Köp!'),
+            style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  side: BorderSide(
+                    color: AppTheme.colorScheme.primary,
+                    width: 1,
+                  ),
+                ),
+            child: Text('   Till kassan   ', style: TextStyle(fontSize: 15),),
           ),],),
               
             ],
