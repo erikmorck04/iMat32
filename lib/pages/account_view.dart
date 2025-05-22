@@ -70,9 +70,9 @@ class _AccountViewState extends State<AccountView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _currentstep == 0 ? 
-                              'Dina Personuppgifter' : 
-                              'Dina Betaluppgifter',
+                            _currentstep == 0
+                                ? 'Dina Personuppgifter'
+                                : 'Dina Betaluppgifter',
                             style: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -81,9 +81,9 @@ class _AccountViewState extends State<AccountView> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            _currentstep == 0 ?
-                              'Här kan du se och ändra dina personuppgifter' :
-                              'Här kan du se och ändra dina betaluppgifter',
+                            _currentstep == 0
+                                ? 'Här kan du se och ändra dina personuppgifter'
+                                : 'Här kan du se och ändra dina betaluppgifter',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.grey[700],
@@ -105,7 +105,10 @@ class _AccountViewState extends State<AccountView> {
 
   Widget _header(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: AppTheme.paddingSmall, bottom: AppTheme.paddingSmall),
+      padding: EdgeInsets.only(
+        top: AppTheme.paddingSmall,
+        bottom: AppTheme.paddingSmall,
+      ),
       color: AppTheme.customPanelColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,9 +123,15 @@ class _AccountViewState extends State<AccountView> {
               onExit: (_) => setState(() => _isHovered = false),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainView()));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainView()),
+                  );
                 },
-                child: Image.asset('assets/images/logoiMat-removebg-preview (1).png', height: 70),
+                child: Image.asset(
+                  'assets/images/logoiMat-removebg-preview (1).png',
+                  height: 70,
+                ),
               ),
             ),
           ),
@@ -140,10 +149,17 @@ class _AccountViewState extends State<AccountView> {
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                      side: BorderSide(
+                        color: AppTheme.colorScheme.primary,
+                        width: 1,
+                      ),
                     ),
                   ),
-                  icon: Icon(Icons.home, size: 32, color: AppTheme.colorScheme.primary),
+                  icon: Icon(
+                    Icons.home,
+                    size: 32,
+                    color: AppTheme.colorScheme.primary,
+                  ),
                   label: Text(
                     'Hem',
                     style: TextStyle(
@@ -170,10 +186,17 @@ class _AccountViewState extends State<AccountView> {
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                      side: BorderSide(
+                        color: AppTheme.colorScheme.primary,
+                        width: 1,
+                      ),
                     ),
                   ),
-                  icon: Icon(Icons.history, size: 32, color: AppTheme.colorScheme.primary),
+                  icon: Icon(
+                    Icons.history,
+                    size: 32,
+                    color: AppTheme.colorScheme.primary,
+                  ),
                   label: Text(
                     'Köphistorik',
                     style: TextStyle(
@@ -183,7 +206,11 @@ class _AccountViewState extends State<AccountView> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HistoryView()));(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HistoryView()),
+                    );
+                    (context);
                   },
                 ),
               ),
@@ -197,10 +224,17 @@ class _AccountViewState extends State<AccountView> {
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(color: AppTheme.colorScheme.primary, width: 1),
+                      side: BorderSide(
+                        color: AppTheme.colorScheme.primary,
+                        width: 1,
+                      ),
                     ),
                   ),
-                  icon: Icon(Icons.person, size: 32, color: AppTheme.colorScheme.primary),
+                  icon: Icon(
+                    Icons.person,
+                    size: 32,
+                    color: AppTheme.colorScheme.primary,
+                  ),
                   label: Text(
                     'Användare',
                     style: TextStyle(
@@ -210,7 +244,10 @@ class _AccountViewState extends State<AccountView> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountView()));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => AccountView()),
+                    );
                   },
                 ),
               ),
@@ -222,11 +259,9 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-
-
   Widget _personalInfo() {
     return Container(
-      color: AppTheme.customPanelColor,
+      color: AppTheme.customPanelColor3,
       padding: const EdgeInsets.all(40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +276,7 @@ class _AccountViewState extends State<AccountView> {
 
   Widget _cardInfo() {
     return Container(
-      color: AppTheme.customPanelColor,
+      color: AppTheme.customPanelColor3,
       padding: const EdgeInsets.all(40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,7 +295,7 @@ class _AccountViewState extends State<AccountView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (_currentstep == 1) 
+          if (_currentstep == 1)
             _buildActionButton(
               onPressed: _gotoPreviousStep,
               label: 'Tillbaka till Personuppgifter',
@@ -270,13 +305,13 @@ class _AccountViewState extends State<AccountView> {
             _buildActionButton(
               onPressed: () {
                 customerKey.currentState?.saveCustomer();
-                _gotoNextStep();           
+                _gotoNextStep();
               },
               label: 'Gå till Betaluppgifter',
               icon: Icons.arrow_forward,
               isPrimary: true,
             ),
-          if (_currentstep == 1) 
+          if (_currentstep == 1)
             _buildActionButton(
               onPressed: () {
                 cardKey.currentState?.saveCard();
