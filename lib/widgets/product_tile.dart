@@ -71,22 +71,24 @@ class ProductTile extends StatelessWidget {
     var iMat = Provider.of<ImatDataHandler>(context, listen: false);
     var isFavorite = iMat.isFavorite(product);
 
-    var icon =
-        isFavorite
-            ? Icon(Icons.star, color: Colors.orange)
-            : Icon(Icons.star_border, color: Colors.orange);
+    var icon = isFavorite
+        ? Icon(Icons.star, color: Colors.orange)
+        : Icon(Icons.star_border, color: Colors.orange);
 
     return ElevatedButton(
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text('Favorit'), SizedBox(width: 8), icon],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(isFavorite ? 'Avfavorisera' : 'Favorit'), // Change text here
+          SizedBox(width: 8),
+          icon,
+        ],
       ),
       onPressed: () {
         iMat.toggleFavorite(product);
+        // To update the UI, you may need to call setState if this is in a StatefulWidget
+        // In a StatelessWidget, consider using Consumer or Selector for ImatDataHandler
       },
-      
     );
   }
 }
