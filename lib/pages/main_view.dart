@@ -29,6 +29,28 @@ final Map<String, IconData> mainCategoryIcons = {
   'Övrigt': Icons.category,
 };
 
+final Map<String, ProductCategory> swedishCategoryNames = {
+  'grönsaker': ProductCategory.CABBAGE,
+  'frukt': ProductCategory.FRUIT,
+  'citrusfrukter': ProductCategory.CITRUS_FRUIT,
+  'exotiska frukter': ProductCategory.EXOTIC_FRUIT,
+  'bär': ProductCategory.BERRY,
+  'meloner': ProductCategory.MELONS,
+  'rotfrukter': ProductCategory.ROOT_VEGETABLE,
+  'pasta': ProductCategory.PASTA,
+  'potatis & ris': ProductCategory.POTATO_RICE,
+  'mjöl, socker & salt': ProductCategory.FLOUR_SUGAR_SALT,
+  'nötter & frön': ProductCategory.NUTS_AND_SEEDS,
+  'kryddor': ProductCategory.HERB,
+  'varma drycker': ProductCategory.HOT_DRINKS,
+  'kalla drycker': ProductCategory.COLD_DRINKS,
+  'kött': ProductCategory.MEAT,
+  'fisk': ProductCategory.FISH,
+  'mejeri': ProductCategory.DAIRIES,
+  'bröd': ProductCategory.BREAD,
+  'godis': ProductCategory.SWEET,
+};
+
   @override
   Widget build(BuildContext context) {
     var iMat = context.watch<ImatDataHandler>();
@@ -336,12 +358,17 @@ final Map<String, IconData> mainCategoryIcons = {
                   filled: true,
                 ),
                 onChanged: (value) {
-                  var iMat = Provider.of<ImatDataHandler>(context, listen: false);
-                  if (value.isEmpty) {
-                    iMat.selectAllProducts();
-                  } else {
-                    iMat.selectSelection(iMat.findProducts(value));
-                  }
+  var iMat = Provider.of<ImatDataHandler>(context, listen: false);
+  final lowerValue = value.toLowerCase().trim();
+  final matches = swedishCategoryNames.entries
+    .where((entry) => entry.key.contains(lowerValue))
+    .toList();
+
+if (matches.isNotEmpty) {
+  iMat.selectSelection(iMat.findProductsByCategory(matches.first.value));
+} else {
+  iMat.selectSelection(iMat.findProducts(value));
+}
                 },
               ),
             ),
