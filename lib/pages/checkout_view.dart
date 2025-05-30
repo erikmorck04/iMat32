@@ -28,7 +28,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   final ScrollController _scrollController = ScrollController();
 
   void _gotoNextStep() {
-    // Spara formulärdata innan vi går till nästa steg
     if (_currentstep == 1) {
       _customerFormKey.currentState?.saveCustomer();
     }
@@ -777,10 +776,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                     _cardFormKey.currentState?.saveCard();
                   });
 
-                  // Place the order and show confirmation
                   handler.placeOrder();
                   setState(() {
-                    _currentstep = -1; // Show purchase confirmation
+                    _currentstep = -1;
                   });
                 } else {
                   _customerFormKey.currentState?.saveCustomer();
